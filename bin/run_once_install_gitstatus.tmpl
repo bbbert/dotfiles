@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ "{{ .install_gitstatus }}" != "true" ]; then
+  exit
+fi
+
+if [ ! -x /usr/bin/git ]; then
+  echo "Unable to install gitstatus: git not found"
+  exit 1
+fi
+
+if [ ! -e "$HOME/.gitstatus" ]; then
+  git clone --depth=1 https://github.com/romkatv/gitstatus.git $HOME/.gitstatus
+fi
