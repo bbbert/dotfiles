@@ -5,7 +5,7 @@ set -xe
 function install_packages_ubuntu_2004() {
   PACKAGES=(
     {{ if .install_grc }} grc {{ end }}
-    {{ if .install_shell_tools }}
+    {{ if .install_misc_tools }}
       iftop
       net-tools
       nmap
