@@ -2,17 +2,14 @@
 
 set -xe
 
-function unsupported() {
-  echo "Cannot install $1 on unsupported system configuration."
+function cannot() {
+  echo "Unsupported system configuration: cannot $@"
+  echo "Please extend run_once_install.tmpl for the following system configuration"
+  chezmoi data
   exit 1
 }
 
-function install_gitstatus() {
-  if [ ! -e "$HOME/.gitstatus" ]; then
-    echo "Installing gitstatus."
-    git clone --depth=1 https://github.com/romkatv/gitstatus.git "$HOME/.gitstatus"
-  fi
-}
+### Ubuntu: apt/apt-get wrappers
 
 NEED_APT_UPDATE=1
 
@@ -23,7 +20,7 @@ function maybe_apt_update() {
     elif command -v apt-get &> /dev/null; then
       sudo apt-get update
     else
-      unsupported
+      cannot "apt/apt-get update"
     fi
     NEED_APT_UPDATE=0
   fi
@@ -36,7 +33,16 @@ function apt_install() {
   elif command -v apt-get &> /dev/null; then
     sudo apt-get install -y $@
   else
-    unsupported
+    cannot "apt/apt-get install"
+  fi
+}
+
+### Cross-platform install scripts
+
+function install_gitstatus() {
+  if [ ! -e "$HOME/.gitstatus" ]; then
+    echo "Installing gitstatus."
+    git clone --depth=1 https://github.com/romkatv/gitstatus.git "$HOME/.gitstatus"
   fi
 }
 
@@ -45,7 +51,7 @@ function install_grc() {
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     apt_install grc
   {{ else }}
-    unsupported
+    cannot "install grc"
   {{ end }}
 }
 
@@ -55,7 +61,7 @@ function install_fzf() {
              (eq .chezmoi.osRelease.versionID "20.04")) }}
     apt_install fzf
   {{ else }}
-    unsupported
+    cannot "install fzf"
   {{ end }}
 }
 
@@ -64,7 +70,17 @@ function install_misc_tools() {
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     apt_install iftop net-tools nmap pv sysstat traceroute tree
   {{ else }}
-    unsupported
+    cannot "install misc tools"
+  {{ end }}
+}
+
+function install_rg() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")
+             (eq .chezmoi.osRelease.versionID "20.04")) }}
+    apt_install ripgrep
+  {{ else }}
+    cannot "install ripgrep"
   {{ end }}
 }
 
@@ -73,3 +89,4 @@ echo "OS: {{ .chezmoi.os }}"
 {{ if .install_grc }} install_grc {{ end }}
 {{ if .install_fzf }} install_fzf {{ end }}
 {{ if .install_misc_tools }} install_misc_tools {{ end }}
+{{ if .install_rg }} install_rg {{ end }}
