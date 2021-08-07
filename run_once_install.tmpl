@@ -2,39 +2,6 @@
 
 set -xe
 
-function install_packages_ubuntu_2004() {
-  PACKAGES=(
-    {{ if .install_grc }} grc {{ end }}
-    {{ if .install_misc_tools }}
-      iftop
-      net-tools
-      nmap
-      pv
-      sysstat
-      traceroute
-      tree
-    {{ end }}
-  )
-
-  sudo apt update
-  sudo apt install -y ${PACKAGES[@]}
-}
-
-function install_packages() {
-  echo "Installing packages..."
-  {{ if (eq .chezmoi.os "linux") }}
-    {{ if (eq .chezmoi.osRelease.id "ubuntu") }}
-      {{ if (eq .chezmoi.osRelease.versionID "20.04") }}
-        install_packages_ubuntu_2004
-        return
-      {{ end }}
-    {{ end }}
-  {{ end }}
-
-  echo "Unsupported OS: {{ .chezmoi.os }}/{{ .chezmoi.osRelease.id }}/{{ .chezmoi.osRelease.versionID }}"
-  exit 1
-}
-
 function install_gitstatus() {
   if [ ! -e "$HOME/.gitstatus" ]; then
     echo "Installing gitstatus."
@@ -42,7 +9,32 @@ function install_gitstatus() {
   fi
 }
 
-install_packages
-{{ if .install_gitstatus }}
-  install_gitstatus
-{{ end }}
+function apt_install() {
+  if command -v apt &> /dev/null; then
+    sudo apt update
+    sudo apt install -y $@
+  fi
+}
+
+function install_grc() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")) }}
+    apt_install grc
+  {{ else }}
+    exit 1
+  {{ end }}
+}
+
+function install_misc_tools() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")) }}
+    apt_install iftop net-tools nmap pv sysstat traceroute tree
+  {{ else }}
+    exit 1
+  {{ end }}
+}
+
+echo "OS: {{ .chezmoi.os }}"
+{{ if .install_gitstatus }} install_gitstatus {{ end }}
+{{ if .install_grc }} install_grc {{ end }}
+{{ if .install_misc_tools }} install_misc_tools {{ end }}
