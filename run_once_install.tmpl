@@ -1,16 +1,24 @@
 #!/bin/bash
 # vim: set ft=bash:
 
-set -xe
+HUMAN_READABLE_SYSTEM_CONFIGURATION='{{ .chezmoi.os }}/{{ .chezmoi.arch }}'
+{{ if (eq .chezmoi.os "linux") }}
+  HUMAN_READABLE_SYSTEM_CONFIGURATION+=' {{ .chezmoi.osRelease.name }} {{ .chezmoi.osRelease.version }}'
+{{ end }}
 
 function cannot() {
   echo "Unsupported system configuration: cannot $@"
-  echo "Please extend run_once_install.tmpl for the following system configuration"
-  chezmoi data
+  echo "Please extend run_once_install.tmpl for: $HUMAN_READABLE_SYSTEM_CONFIGURATION"
   exit 1
 }
 
 ### Ubuntu: apt/apt-get wrappers
+
+{{ if (and (eq .chezmoi.os "linux")
+           (eq .chezmoi.osRelease.id "ubuntu")) }}
+  UBUNTU_MAJOR_VERSION=$(echo -n '{{ .chezmoi.osRelease.versionID }}' | cut -d. -f1 )
+  UBUNTU_MINOR_VERSION=$(echo -n '{{ .chezmoi.osRelease.versionID }}' | cut -d. -f2 )
+{{ end }}
 
 NEED_APT_UPDATE=1
 
@@ -85,7 +93,11 @@ function install_rg() {
   {{ end }}
 }
 
-echo "OS: {{ .chezmoi.os }}"
+### Perform the actual installation
+
+set -xe
+
+echo "OS: $HUMAN_READABLE_SYSTEM_CONFIGURATION"
 {{ if .install_gitstatus }} install_gitstatus {{ end }}
 {{ if .install_grc }} install_grc {{ end }}
 {{ if .install_fzf }} install_fzf {{ end }}
