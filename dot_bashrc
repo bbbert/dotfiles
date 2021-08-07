@@ -2,7 +2,7 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# If not running interactively, don't do anything
+# if not running interactively, don't do anything
 case $- in
   *i*) ;;
     *) return;;
@@ -11,8 +11,8 @@ esac
 
 ### History
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
+# don't put duplicate lines or lines starting with space in the history
+# see bash(1) for more options
 HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
@@ -29,7 +29,7 @@ HISTFILESIZE=32768
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Don't autocomplete on empty lines
+# don't autocomplete on empty lines
 shopt -s no_empty_cmd_completion
 
 # make less more friendly for non-text input files, see lesspipe(1)
@@ -45,17 +45,16 @@ fi
 
 ### Colours
 
-# enable color support of ls and also add handy aliases
+# enable colour support of ls
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto'
-  #alias dir='dir --color=auto'
-  #alias vdir='vdir --color=auto'
-
-  alias grep='grep --color=auto'
-  alias fgrep='fgrep --color=auto'
-  alias egrep='egrep --color=auto'
 fi
+
+# enable colour support of grep
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
