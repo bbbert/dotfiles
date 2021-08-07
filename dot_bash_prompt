@@ -1,4 +1,4 @@
-#"!/bin/bash
+#!/bin/bash
 
 prompt_git_nogitstatus() {
   local s='';
@@ -49,11 +49,6 @@ prompt_git_nogitstatus() {
     return;
   fi;
 }
-
-if [[ -f "$HOME/.gitstatus/gitstatus.plugin.sh" ]]; then
-  source "$HOME/.gitstatus/gitstatus.plugin.sh"
-  [[ "$(type -t gitstatus_query)" == "function" ]] && gitstatus_stop && gitstatus_start
-fi
 
 prompt_git_gitstatus() {
   gitstatus_query || return;
@@ -132,9 +127,15 @@ prompt_venv() {
   if [ -z "$VIRTUAL_ENV" ]; then
     return
   else
-    echo -e "${1}(`basename \"$VIRTUAL_ENV\"`)"
+    echo -e "${1}($(basename \"$VIRTUAL_ENV\"))"
   fi
 }
+
+# Initialize gitstatus if it is installed
+if [[ -f "$HOME/.gitstatus/gitstatus.plugin.sh" ]]; then
+  source "$HOME/.gitstatus/gitstatus.plugin.sh"
+  [[ "$(type -t gitstatus_query)" == "function" ]] && gitstatus_stop && gitstatus_start
+fi
 
 if tput setaf 1 &> /dev/null; then
   tput sgr0; # reset colors
@@ -188,9 +189,9 @@ custom_prompt() {
 
   # Add a newline between commands
   if [ "${IS_FIRST_COMMAND}" == "0" ]; then
-    IS_FIRST_COMMAND=0
     PS1+="\n";
   fi
+  IS_FIRST_COMMAND=0
 
   PS1+="\[${bold}\]";
   PS1+="\$(prompt_shlvl \"${green}\" \" \")"; # Virtualenv details
