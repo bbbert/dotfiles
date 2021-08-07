@@ -5,6 +5,8 @@
 
   br = branch -a -v
 
+  cm = commit -m
+
   co = checkout
   cob = checkout -b
 
