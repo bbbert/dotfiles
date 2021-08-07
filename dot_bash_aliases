@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# enables bash aliases to still work after sudo
+alias sudo='sudo '
+
 # ls
 alias ll='ls -lAF'
 alias la='ls -A'
@@ -41,7 +44,7 @@ fi
 
 # Alert message using notify-send
 if [ -x /usr/bin/notify-send ] ; then
-  # Show a desktop notification when the command ends.
+  # Show a desktop notification when the command ends
   # e.g.
   #   $ sleep 10; alert
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'

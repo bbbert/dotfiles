@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# if grc is installed, use it to colourize output
+if [ "$TERM" != dumb ] && command -v grc &> /dev/null; then
+  alias grcl='/usr/bin/grc -es --colour=auto'
+
+  colourize() {
+    local TARGET="$1"
+
+    if command -v "$TARGET" &> /dev/null; then
+      alias $TARGET="grcl $TARGET"
+    fi
+  }
+
+  CMDS=(
+    ant
+    blkid
+    curl
+    cvs
+    cvs
+    df
+    diff
+    dig
+    docker
+    du
+    env
+    fdisk
+    free
+    id
+    ifconfig
+    iostat
+    ip
+    iwconfig
+    journalctl
+    kubectl
+    last
+    lastlog
+    ld
+    ldap
+    lsattr
+    lsblk
+    lsmod
+    lsof
+    lspci
+    make
+    make
+    mount
+    mvn
+    netstat
+    nmap
+    ping
+    ps
+    semanage
+    sensors
+    ss
+    stat
+    sysctl
+    systemctl
+    tcpdump
+    traceroute
+    ulimit
+    uptime
+    vmstat
+    who
+    whois
+  )
+  for CMD in "${CMDS[@]}"; do
+    colourize $CMD
+  done
+fi
+
