@@ -78,13 +78,16 @@ if ! shopt -oq posix; then
 fi
 
 # enable fzf completion and keybindings
-if [ -f /usr/share/bash-completion/completions/fzf ]; then
-  . /usr/share/bash-completion/completions/fzf
+if [ -f $HOME/.fzf.bash ]; then
+  . $HOME/.fzf.bash
+else
+  if [ -f /usr/share/bash-completion/completions/fzf ]; then
+    . /usr/share/bash-completion/completions/fzf
+  fi
+  if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+    . /usr/share/doc/fzf/examples/key-bindings.bash
+  fi
 fi
-if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
-  . /usr/share/doc/fzf/examples/key-bindings.bash
-fi
-
 
 ### Editor
 
