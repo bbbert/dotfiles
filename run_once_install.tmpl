@@ -2,6 +2,11 @@
 
 set -xe
 
+function unsupported() {
+  echo "Cannot install $1 on unsupported system configuration."
+  exit 1
+}
+
 function install_gitstatus() {
   if [ ! -e "$HOME/.gitstatus" ]; then
     echo "Installing gitstatus."
@@ -9,10 +14,29 @@ function install_gitstatus() {
   fi
 }
 
+NEED_APT_UPDATE=1
+
+function maybe_apt_update() {
+  if [ "$NEED_APT_UPDATE" == "1" ]; then
+    if command -v apt &> /dev/null; then
+      sudo apt update
+    elif command -v apt-get &> /dev/null; then
+      sudo apt-get update
+    else
+      unsupported
+    fi
+    NEED_APT_UPDATE=0
+  fi
+}
+
 function apt_install() {
+  maybe_apt_update
   if command -v apt &> /dev/null; then
-    sudo apt update
     sudo apt install -y $@
+  elif command -v apt-get &> /dev/null; then
+    sudo apt-get install -y $@
+  else
+    unsupported
   fi
 }
 
@@ -21,7 +45,17 @@ function install_grc() {
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     apt_install grc
   {{ else }}
-    exit 1
+    unsupported
+  {{ end }}
+}
+
+function install_fzf() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")
+             (eq .chezmoi.osRelease.versionID "20.04")) }}
+    apt_install fzf
+  {{ else }}
+    unsupported
   {{ end }}
 }
 
@@ -30,11 +64,12 @@ function install_misc_tools() {
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     apt_install iftop net-tools nmap pv sysstat traceroute tree
   {{ else }}
-    exit 1
+    unsupported
   {{ end }}
 }
 
 echo "OS: {{ .chezmoi.os }}"
 {{ if .install_gitstatus }} install_gitstatus {{ end }}
 {{ if .install_grc }} install_grc {{ end }}
+{{ if .install_fzf }} install_fzf {{ end }}
 {{ if .install_misc_tools }} install_misc_tools {{ end }}
