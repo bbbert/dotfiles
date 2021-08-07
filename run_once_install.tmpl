@@ -103,9 +103,11 @@ function install_rg() {
     if awk "BEGIN { exit !($UBUNTU_VERSION >= 18.10) }" &> /dev/null; then
       ## ripgrep is included in the main repo after 18.10
       apt_install ripgrep
-    else
+    elif awk "BEGIN { exit !($UBUNTU_VERSION >= 16.04) }" &> /dev/null; then
       ## otherwise we can install it using snap
       sudo snap install ripgrep --classic
+    else
+      cannot "install ripgrep"
     fi
   {{ else }}
     cannot "install ripgrep"
