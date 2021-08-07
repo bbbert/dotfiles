@@ -1,5 +1,5 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# vim: set ft=bash:
+# vim: set ft=sh:
 
 # if not running interactively, don't do anything
 case $- in
