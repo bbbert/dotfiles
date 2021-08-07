@@ -9,8 +9,14 @@
 {{- end -}}
 
 [data]
-    name = {{ $name | quote }}
-    email = {{ $email | quote }}
+  name = {{ $name | quote }}
+  email = {{ $email | quote }}
 
-    install_gitstatus = true
-    install_grc = true
+  # for fast git status in bash prompt
+  install_gitstatus = true
+
+  # for coloured shell output
+  install_grc = true
+
+  # various shell tools
+  install_shell_tools = false
