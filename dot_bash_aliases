@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# ls
+alias ll='ls -lAF'
+alias la='ls -A'
+alias l='ls -CF'
+alias lh='ls -lAFH'
+alias llr='ls -lAR'
+
+# Aliases for apt/apt-get/apt-cache if they exist
+if [ -x /usr/bin/apt ] && [ -x /usr/bin/sudo ] ; then
+  alias apts='apt search'
+  alias aptsh='apt show'
+  alias apti='sudo apt install'
+  alias aptiy='sudo apt install -y'
+  alias aptr='sudo apt remove'
+  alias apta='sudo apt autoremove'
+  alias aptu='sudo apt update'
+elif [ -x /usr/bin/apt-get ] && [ -x /usr/bin/apt-cache ] && [ -x /usr/bin/sudo ] ; then
+  alias apts='apt-cache search'
+  alias aptsh='apt-cache show'
+  alias apti='sudo apt-get install'
+  alias aptiy='sudo apt-get install -y'
+  alias aptr='sudo apt-get remove'
+  alias apta='sudo apt-get autoremove'
+  alias aptu='sudo apt-get update'
+fi
+
+# Alias xdg-open to open
+if [ -x /usr/bin/xdg-open ] ; then
+  if [ -x /usr/bin/nohup ] ; then
+    # Run in the background and don't quit if the terminal quits
+		function open() {
+      nohup xdg-open $@ > /dev/null 2>&1 &
+    }
+  else
+    # Run in the foreground
+    alias open='xdg-open &>/dev/null'
+  fi
+fi
+
+# Alert message using notify-send
+if [ -x /usr/bin/notify-send ] ; then
+  # Show a desktop notification when the command ends.
+  # e.g.
+  #   $ sleep 10; alert
+  alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+fi
