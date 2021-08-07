@@ -1,25 +1,35 @@
-{{- $name := get . "name" -}}
-{{- if not $name -}}
-{{-   $name = promptString "name" -}}
-{{- end -}}
+{{ $name := get . "name" }}
+{{ if not $name }}
+{{   $name = promptString "name" }}
+{{ end }}
 
-{{- $email := get . "email" -}}
-{{- if not $email -}}
-{{-   $email = promptString "email" -}}
-{{- end -}}
+{{ $email := get . "email" }}
+{{ if not $email }}
+{{   $email = promptString "email" }}
+{{ end }}
+
+{{ $defaults := dict }}
+{{ $_ := set $defaults "install_gitstatus" true }}
+{{ $_ := set $defaults "install_grc" true }}
+{{ $_ := set $defaults "install_fzf" true }}
+{{ $_ := set $defaults "install_rg" true }}
+{{ $_ := set $defaults "install_misc_tools" true }}
 
 [data]
   name = {{ $name | quote }}
   email = {{ $email | quote }}
 
   # for fast git status in bash prompt
-  install_gitstatus = true
+  install_gitstatus = {{ pluck "install_gitstatus" . $defaults | first }}
 
   # for coloured shell output
-  install_grc = true
+  install_grc = {{ pluck "install_grc" . $defaults | first }}
 
   # for fuzzy search
-  install_fzf = true
+  install_fzf = {{ pluck "install_fzf" . $defaults | first }}
+
+  # for fast grep
+  install_rg = {{ pluck "install_rg" . $defaults | first }}
 
   # various misc tools
-  install_misc_tools = false
+  install_misc_tools = {{ pluck "install_misc_tools" . $defaults | first }}
