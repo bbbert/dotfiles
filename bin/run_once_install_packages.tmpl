@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -xe
+
+function install_ubuntu_2004() {
+  PACKAGES=(
+    {{ if .install_grc }} grc {{ end }}
+  )
+
+  sudo apt update
+  sudo apt install -y ${PACKAGES[@]}
+}
+
+echo "Installing packages..."
+
+{{ if (eq .chezmoi.os "linux") }}
+  {{ if (eq .chezmoi.osRelease.id "ubuntu") }}
+    {{ if (eq .chezmoi.osRelease.versionID "20.04") }}
+      install_ubuntu_2004
+      exit 0
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+echo "Unsupported OS: {{ .chezmoi.os }}/{{ .chezmoi.osRelease.id }}/{{ .chezmoi.osRelease.versionID }}"
+exit 1
