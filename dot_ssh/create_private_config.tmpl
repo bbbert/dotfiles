@@ -1,0 +1,9 @@
+Host *
+  # re-use existing connections
+  ControlMaster auto
+  ControlPath ~/.ssh/cm_%r@%h:%p
+  ControlPersist 10m
+
+  # keep the connection alive
+  ServerAliveCountMax 5
+  ServerAliveInterval 30
