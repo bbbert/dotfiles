@@ -79,6 +79,16 @@ if ! shopt -oq posix; then
 fi
 
 
+### Editor
+
+for POTENTIAL_EDITOR in nvim vim nano; do
+  if command -v $POTENTIAL_EDITOR &> /dev/null; then
+    export EDITOR="$POTENTIAL_EDITOR"
+    break
+  fi
+done
+
+
 ### External files
 
 # Add local bin directory
