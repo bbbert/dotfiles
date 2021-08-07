@@ -3,6 +3,17 @@
 # enables bash aliases to still work after sudo
 alias sudo='sudo '
 
+# cd
+alias cd..='cd ..'
+alias ..='cd ..'
+
+for UPLEVEL in {2..5}; do
+  UPLEVEL_TARGET=$(printf '../%.0s' $(seq 1 $UPLEVEL))
+  UPLEVEL_DOTS=$(printf '.%.0s' $(seq 1 $UPLEVEL))
+  alias ..$UPLEVEL="cd $UPLEVEL_TARGET"
+  alias .$UPLEVEL_DOTS="cd $UPLEVEL_TARGET"
+done
+
 # ls
 alias ll='ls -lAF'
 alias la='ls -A'
@@ -10,7 +21,7 @@ alias l='ls -CF'
 alias lh='ls -lAFH'
 alias llr='ls -lAR'
 
-# Aliases for apt/apt-get/apt-cache if they exist
+# aliases for apt/apt-get/apt-cache if they exist
 if [ -x /usr/bin/apt ] && [ -x /usr/bin/sudo ] ; then
   alias apts='apt search'
   alias aptsh='apt show'
@@ -29,23 +40,31 @@ elif [ -x /usr/bin/apt-get ] && [ -x /usr/bin/apt-cache ] && [ -x /usr/bin/sudo 
   alias aptu='sudo apt-get update'
 fi
 
-# Alias xdg-open to open
+# alias xdg-open to open
 if [ -x /usr/bin/xdg-open ] ; then
   if [ -x /usr/bin/nohup ] ; then
-    # Run in the background and don't quit if the terminal quits
+    # run in the background and don't quit if the terminal quits
 		function open() {
       nohup xdg-open $@ > /dev/null 2>&1 &
     }
   else
-    # Run in the foreground
+    # run in the foreground
     alias open='xdg-open &>/dev/null'
   fi
 fi
 
-# Alert message using notify-send
+# alert message using notify-send
 if [ -x /usr/bin/notify-send ] ; then
-  # Show a desktop notification when the command ends
+  # show a desktop notification when the command ends
   # e.g.
   #   $ sleep 10; alert
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 fi
+
+# nvim
+if command -v nvim &> /dev/null; then
+  alias vim='nvim'
+fi
+
+# misc
+alias df='df -Th'
