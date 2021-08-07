@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: set ft=bash:
 
 prompt_git_nogitstatus() {
   local s='';

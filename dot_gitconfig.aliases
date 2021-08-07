@@ -1,3 +1,5 @@
+# vim: set ft=gitconfig:
+
 [alias]
   alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
 

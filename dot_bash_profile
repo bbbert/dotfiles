@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: set ft=bash:
 
 if [ -f "$HOME/.bashrc" ]; then
   source "$HOME/.bashrc"

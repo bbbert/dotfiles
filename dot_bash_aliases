@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: set ft=bash:
 
 # enables bash aliases to still work after sudo
 alias sudo='sudo '

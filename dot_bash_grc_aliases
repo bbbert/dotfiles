@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: set ft=bash:
 
 # if grc is installed, use it to colourize output
 if [ "$TERM" != dumb ] && command -v grc &> /dev/null; then
