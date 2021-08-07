@@ -69,10 +69,21 @@ if command -v notify-send &> /dev/null; then
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 fi
 
-# nvim
+# vim
 if command -v nvim &> /dev/null; then
   alias vim='nvim'
 fi
+alias svim='sudo vim'
 
 # misc
-alias df='df -Th'
+alias histgrep='history | grep'
+
+# dns
+function flush_dns() {
+  if command -v systemd-resolve &> /dev/null; then
+    sudo systemd-resolve --flush-caches
+  elif command -v systemctl &> /dev/null && \
+    systemctl cat nscd > /dev/null; then
+    sudo systemctl restart nscd
+  fi
+}
