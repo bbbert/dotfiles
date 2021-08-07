@@ -1,0 +1,36 @@
+[apply]
+  # detect whitespace errors when applying patches
+  whitespace = fix
+
+[core]
+  # fix line endings by converting CRLF to LF on git add
+  autocrlf = input
+
+[diff]
+  # moved lines show up in a different color
+  colorMoved = true
+
+  # detect copies and renames 
+  renames = copies
+
+[diff "bin"]
+  # use hexdump for binary file diff
+  textconv = hexdump -v -C
+
+[fetch]
+  # fetch also runs remote prune
+  prune = true
+
+[pull]
+  # pull defaults to rebase instead of merge
+	rebase = true
+
+[push]
+  # when not specifying the remote, push to a branch with
+  # the same name, but don't create one if it doesn't exist
+  default = simple
+
+[user]
+  name = {{ .name }}
+  email = {{ .email }}
+
