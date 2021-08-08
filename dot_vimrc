@@ -108,10 +108,383 @@ set wildmenu                            " Show menu
 
 " }}}
 
-" Autocmds {{{1
+" Plugins (vim-plug) {{{1
+" ------------------
+
+" Automatic plugin installation on first load
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+silent execute '!curl -fLo ' . data_dir . '/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
+
+" Workspace features {{{2
+" ------------------
+
+" Airline
+Plug 'vim-airline/vim-airline'
+
+" vim-startify
+Plug 'mhinz/vim-startify'
+
+" Git gutter
+Plug 'airblade/vim-gitgutter'
+
+" NERDTree
+Plug 'scrooloose/nerdtree'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+" Bufkill
+Plug 'qpkorr/vim-bufkill'
+
+" Gundo
+Plug 'sjl/gundo.vim'
+
+" Fuzzy finder
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+" Seamless split navigation with tmux
+Plug 'christoomey/vim-tmux-navigator'
+
+" }}}
+
+" Eye candy {{{2
+" ---------
+
+" Themes for Airline
+Plug 'vim-airline/vim-airline-themes'
+
+" Solarized colorscheme
+Plug 'icymind/NeoSolarized'
+
+" A whole set of colorschemes
+Plug 'rafi/awesome-vim-colorschemes'
+
+" One (Atom) colorscheme for vim
+Plug 'rakr/vim-one'
+
+" Filetype icons
+Plug 'ryanoasis/vim-devicons'
+
+" }}}
+
+" Text editing {{{2
+" ------------
+
+" tpope's text utilities
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+
+" tpope's commentary
+Plug 'tpope/vim-commentary'
+
+" Custom textobjs
+Plug 'kana/vim-textobj-user'
+
+Plug 'Julian/vim-textobj-brace'          " aj/ij for braces
+Plug 'beloglazov/vim-textobj-quotes'     " aq/iq for quotes
+Plug 'kana/vim-textobj-datetime'         " ada/ida for dates
+Plug 'kana/vim-textobj-indent'           " ai/ii, aI/iI for block of lines of similar indentation
+Plug 'kana/vim-textobj-line'             " al/il for current line
+Plug 'kana/vim-textobj-function'         " af/if for current function
+Plug 'glts/vim-textobj-comment'          " ac/ic for comment, aC/iC includes surrounding whitespace
+Plug 'whatyouhide/vim-textobj-xmlattr'   " ax/ix for xml/html attributes
+
+" Tabular
+Plug 'godlygeek/tabular'
+
+" Vim table mode
+Plug 'dhruvasagar/vim-table-mode'
+
+" Highlight yanks
+Plug 'machakann/vim-highlightedyank'
+
+" Increment numbers
+Plug 'triglav/vim-visual-increment'
+
+" Vim search pulse
+Plug 'inside/vim-search-pulse'
+
+" }}}
+
+call plug#end()
+
+" }}}
+
+" Theming {{{1
+" -------
+
+try
+  colorscheme OceanicNext
+  set background=dark
+  let g:airline_theme = "oceanicnext"
+catch /^Vim\%((\a\+)\)\=:E185/
+  colorscheme default
+  set background=dark
+endtry
+
+" }}}
+
+" Plugin configuration {{{1
+" --------------------
+
+" Startify {{{2
+" -------
+
+let g:startify_change_to_dir = 0
+
+" }}}
+
+" Airline {{{2
+" -------
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+
+" }}}
+
+" GitGutter {{{2
+" ---------
+
+let g:gitgutter_map_keys = 0                " Let me map my own keys
+let g:gitgutter_max_signs = 1024            " Allow more signs by default
+let g:gitgutter_override_sign_column_highlight = 0
+
+" }}}
+
+" NERDTree Syntax Highlight {{{2
+" -------------------------
+
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+
+" }}}
+
+" NERDTree devicons fix {{{2
+" ---------------------
+
+" fix brackets around devicons after re-sourcing vimrc
+" https://github.com/ryanoasis/vim-devicons/issues/154
+if exists('g:loaded_webdevicons')
+  call webdevicons#refresh()
+endif
+
+" }}}
+
+" Highlighted yank {{{2
+" ----------------
+
+let g:highlightedyank_highlight_duration = 50
+
+" }}}
+
+" }}}
+
+" Keymaps {{{1
+" -------
+
+" bufkill {{{2
+" -------
+
+" Close and unload buffers without closing window
+nnoremap <Leader>q :BD<CR>
+
+" }}}
+
+" Airline {{{2
+" -------
+
+" Airline buffer numbers work like tabs
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+nmap <Leader>1 <Plug>AirlineSelectTab1
+nmap <Leader>2 <Plug>AirlineSelectTab2
+nmap <Leader>3 <Plug>AirlineSelectTab3
+nmap <Leader>4 <Plug>AirlineSelectTab4
+nmap <Leader>5 <Plug>AirlineSelectTab5
+nmap <Leader>6 <Plug>AirlineSelectTab6
+nmap <Leader>7 <Plug>AirlineSelectTab7
+nmap <Leader>8 <Plug>AirlineSelectTab8
+nmap <Leader>9 <Plug>AirlineSelectTab9
+nmap <Leader>- <Plug>AirlineSelectPrevTab
+nmap <Leader>= <Plug>AirlineSelectNextTab
+
+" }}}
+
+" GitGutter {{{2
+" ---------
+
+" Remap next hunk command
+nmap ]h <Plug>(GitGutterNextHunk)
+" Remap previous hunk command
+nmap [h <Plug>(GitGutterPrevHunk)
+" Stage hunk
+nmap <Leader>hs <Plug>(GitGutterStageHunk)
+" Revert hunk
+nmap <Leader>hr <Plug>(GitGutterUndoHunk)
+
+" Toggle folding on diffs
+nmap <Leader>hf :GitGutterFold<CR>
+
+" }}}
+
+" Gundo {{{2
+" -----
+
+" Show infinite undo window
+nnoremap <Leader>u :<C-u>GundoToggle<CR>
+
+" }}}
+
+" Tabular {{{2
+" -------
+
+" Align text in columns
+nnoremap <Leader>a :<C-u>Tabularize /=<CR>
+
+" }}}
+
+" NERDTree {{{2
 " --------
 
+" Open project dir explorer
+nnoremap <Leader>nn :NERDTreeToggle<CR>
+nnoremap <Leader>nf :NERDTreeFind<CR>
+
+" }}}
+
+" fzf bindings {{{2
+" ------------
+
+" Make full text search happen only on file contents instead of also file name
+command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+
+" Fuzzy case-insensitive filename search on current word under cursor
+command! -bang -nargs=? -complete=dir FilesWord call fzf#vim#files(<q-args>, {'options': '-i --query '.expand('<cword>')}, <bang>0)
+command! -bang -nargs=? GFilesWord call fzf#vim#gitfiles(<q-args>, {'options': '-i --query '.expand('<cword>')}, <bang>0)
+
+" Switch to other split before executing command if inside the NERD tree.
+function! Do_outside_NERD(command)
+    return (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '') . a:command
+endfunction
+
+" Fuzzy matching on filenames in cwd
+nnoremap <expr> <Leader>p Do_outside_NERD(":Files\<CR>")
+
+" Fuzzy case-insensitive filename search on current word under cursor in cwd
+nnoremap <expr> <Leader>wp Do_outside_NERD(":FilesWord\<CR>")
+
+" Fuzzy matching on filenames in Git repo
+nnoremap <expr> <Leader>g Do_outside_NERD(":GFiles\<CR>")
+
+" Fuzzy case-insensitive filename search on current word under cursor in Git repo
+nnoremap <expr> <Leader>wg Do_outside_NERD(":GFilesWord\<CR>")
+
+" Full text search in cwd
+nnoremap <expr> <Leader>f Do_outside_NERD(":Rg\<CR>")
+
+" Full text search in cwd on current word under cursor
+nnoremap <expr> <Leader>wf Do_outside_NERD(":Rg \<C-r>\<C-w>\<CR>")
+
+" Search among the currently open buffers
+nnoremap <expr> <Leader>b Do_outside_NERD(":Buffers\<CR>")
+
+" Make it easier to browse the completion window
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
+" }}}
+
+" vim-tmux-navigator split navigation {{{2
+" -----------------------------------
+
+" Use our custom bindings instead of tmux navigator's default
+let g:tmux_navigator_no_mappings = 1
+
+" Make both ` (tmux prefix) and <C-w> (vim default) work.
+nnoremap <silent> <C-w>h :TmuxNavigateLeft<CR>
+nnoremap <silent> <C-w>j :TmuxNavigateDown<CR>
+nnoremap <silent> <C-w>k :TmuxNavigateUp<CR>
+nnoremap <silent> <C-w>l :TmuxNavigateRight<CR>
+nnoremap <silent> `h :TmuxNavigateLeft<CR>
+nnoremap <silent> `j :TmuxNavigateDown<CR>
+nnoremap <silent> `k :TmuxNavigateUp<CR>
+nnoremap <silent> `l :TmuxNavigateRight<CR>
+
+" Split panes with same keybindings as tmux
+nnoremap <silent> <C-w>\| <C-w><C-v>
+nnoremap <silent> <C-w>- <C-w><C-s>
+nnoremap <silent> `\| <C-w><C-v>
+nnoremap <silent> `- <C-w><C-s>
+
+" Note that this means hjkl-| are not available as marks
+
+" }}}
+
+" Command shortcuts {{{2
+" -----------------
+
+" Make :W do the same thing as :w, and so on
+cabbrev W w
+cabbrev Wq wq
+cabbrev WQ wq
+cabbrev Q q
+cabbrev Qa qa
+cabbrev QA qa
+cabbrev E e
+
+" }}}
+
+" Yank over OSC 52 {{{2
+" ----------------
+
+" copy to attached terminal using the yank(1) script:
+" https://github.com/sunaku/home/blob/master/bin/yank
+function! Yank(text) abort
+  let escape = system('yank', a:text)
+  if v:shell_error
+    echoerr escape
+  else
+    call writefile([escape], '/dev/tty', 'b')
+  endif
+endfunction
+
+" automatically run yank(1) whenever yanking in Vim to the global register
+" (this snippet was contributed by Larry Sanderson)
+function! CopyYank() abort
+  if v:event.regname == "+"
+    call Yank(join(v:event.regcontents, "\n"))
+  endif
+endfunction
+autocmd TextYankPost * call CopyYank()
+
+" }}}
+
+" }}}
+
+" .vimrc loading {{{1
+" --------------
+
 " Reload .vimrc automatically after writing to it
-autocmd BufWritePost .vimrc source ~/.vimrc
+autocmd BufWritePost .vimrc* source $MYVIMRC
+
+" Also reload Airline if it is loaded
+function! MaybeAirlineRefresh() abort
+  if exists('g:loaded_airline')
+    execute ":AirlineRefresh"
+  endif
+endfunction
+call MaybeAirlineRefresh()
+
+autocmd BufWritePost .vimrc* call MaybeAirlineRefresh()
+
+" Source local init.vim if it exists
+if filereadable(expand("$HOME/.vimrc.local"))
+  source $HOME/.vimrc.local
+endif
 
 " }}}
