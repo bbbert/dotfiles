@@ -462,12 +462,12 @@ function! Yank(text) abort
   endif
 endfunction
 
-" automatically run yank(1) whenever yanking in Vim to the global register
+" automatically run yank(1) whenever yanking in Vim to any register
+" Vim does not name clipboard registers and there is no way to tell
+" if the target is the clipboard register.
 " (this snippet was contributed by Larry Sanderson)
 function! CopyYank() abort
-  if v:event.regname == "+"
-    call Yank(join(v:event.regcontents, "\n"))
-  endif
+  call Yank(join(v:event.regcontents, "\n"))
 endfunction
 autocmd TextYankPost * call CopyYank()
 
