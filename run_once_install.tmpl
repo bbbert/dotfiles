@@ -3,7 +3,10 @@
 
 HUMAN_READABLE_SYSTEM_CONFIGURATION='{{ .chezmoi.os }}/{{ .chezmoi.arch }}'
 {{ if (eq .chezmoi.os "linux") }}
-  HUMAN_READABLE_SYSTEM_CONFIGURATION+=' {{ .chezmoi.osRelease.name }} {{ .chezmoi.osRelease.version }}'
+  HUMAN_READABLE_SYSTEM_CONFIGURATION+=' {{ .chezmoi.osRelease.name }}'
+  {{ if (eq .chezmoi.osRelease.id "ubuntu") }}
+    HUMAN_READABLE_SYSTEM_CONFIGURATION+=' {{ .chezmoi.osRelease.version }}'
+  {{ end }}
 {{ end }}
 
 function cannot() {
@@ -54,6 +57,25 @@ function apt_install() {
   fi
 }
 
+### Arch Linux: pacman wrappers
+
+NEED_PACMAN_SYNC=1
+
+function maybe_pacman_update() {
+  if [ "$NEED_PACMAN_SYNC" == "1" ]; then
+    if ! command -v sudo &> /dev/null; then
+      su -c 'pacman -S --noconfirm sudo'
+    fi
+    sudo pacman -Sy
+    NEED_PACMAN_SYNC=0
+  fi
+}
+
+function pacman_install() {
+  maybe_pacman_update
+  sudo pacman -S --noconfirm $@
+}
+
 ### Cross-platform install scripts
 
 function install_gitstatus() {
@@ -67,6 +89,9 @@ function install_grc() {
   {{ if (and (eq .chezmoi.os "linux")
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     apt_install grc
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install grc
   {{ else }}
     cannot "install grc"
   {{ end }}
@@ -92,6 +117,9 @@ function install_fzf() {
       # otherwise we'll install it using git
       install_fzf_git
     fi
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install fzf
   {{ else }}
     cannot "install fzf"
   {{ end }}
@@ -100,7 +128,10 @@ function install_fzf() {
 function install_misc_tools() {
   {{ if (and (eq .chezmoi.os "linux")
              (eq .chezmoi.osRelease.id "ubuntu")) }}
-    apt_install iftop net-tools nmap pv sysstat traceroute tree
+    apt_install iftop mtr net-tools nmap pv sysstat traceroute tree
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install iftop mtr net-tools nmap pv sysstat traceroute tree
   {{ else }}
     cannot "install misc tools"
   {{ end }}
@@ -114,10 +145,13 @@ function install_latest_neovim() {
       add_apt_repository "ppa:neovim-ppa/unstable"
       apt_install neovim
     else
-      cannot "install latest neovim"
+      cannot "install neovim >= 0.50"
     fi
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install neovim
   {{ else }}
-    cannot "install latest neovim"
+    cannot "install neovim >= 0.50"
   {{ end }}
 }
 
@@ -125,14 +159,17 @@ function install_rg() {
   {{ if (and (eq .chezmoi.os "linux")
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     if awk "BEGIN { exit !($UBUNTU_VERSION >= 18.10) }" &> /dev/null; then
-      ## ripgrep is included in the main repo after 18.10
+      # ripgrep is included in the main repo after 18.10
       apt_install ripgrep
     elif awk "BEGIN { exit !($UBUNTU_VERSION >= 16.04) }" &> /dev/null; then
-      ## otherwise we can install it using snap
+      # otherwise we can install it using snap
       sudo snap install ripgrep --classic
     else
       cannot "install ripgrep"
     fi
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install ripgrep
   {{ else }}
     cannot "install ripgrep"
   {{ end }}
@@ -153,19 +190,45 @@ function build_tmux_from_source() {
     ./configure && make && sudo make install
     popd
   {{ else }}
-    cannot "build tmux from source"
+    cannot "build tmux 3.2 from source"
+  {{ end }}
+}
+
+function get_tmux_version() {
+  if command -v tmux &> /dev/null; then
+    tmux -V | cut -d' ' -f2
+  fi
+}
+
+function install_latest_tmux() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")) }}
+    # just install tmux from apt first
+    apt_install tmux
+
+    # then install from source if not enough
+    TMUX_VERSION="$(get_tmux_version)"
+    if [ -z "$TMUX_VERSION" ] ||
+      awk "BEGIN { exit !($TMUX_VERSION < 2.6) }" &> /dev/null; then
+      build_tmux_from_source
+    fi
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install tmux
+  {{ else }}
+    cannot "install tmux >= 2.6"
   {{ end }}
 }
 
 function upgrade_tmux_if_old() {
-  if command -v tmux &> /dev/null; then
-    TMUX_VERSION=$(tmux -V | cut -d' ' -f2)
-    if awk "BEGIN { exit !($TMUX_VERSION >= 2.6) }" &> /dev/null; then
-      return
-    fi
+  TMUX_VERSION="$(get_tmux_version)"
+  echo tmux: $TMUX_VERSION
+  if [ ! -z "$TMUX_VERSION" ] &&
+    awk "BEGIN { exit !($TMUX_VERSION >= 2.6) }" &> /dev/null; then
+    return
   fi
 
-  build_tmux_from_source
+  install_latest_tmux
 }
 
 ### Perform the actual installation
