@@ -289,6 +289,9 @@ endif
 " ----------------
 
 let g:highlightedyank_highlight_duration = 50
+if !exists('##TextYankPost')
+  map y <Plug>(highlightedyank)
+endif
 
 " }}}
 
@@ -453,7 +456,7 @@ cabbrev E e
 
 " copy to attached terminal using the yank(1) script:
 " https://github.com/sunaku/home/blob/master/bin/yank
-function! Yank(text) abort
+function! OscYank(text) abort
   let escape = system('yank', a:text)
   if v:shell_error
     echoerr escape
@@ -466,10 +469,14 @@ endfunction
 " Vim does not name clipboard registers and there is no way to tell
 " if the target is the clipboard register.
 " (this snippet was contributed by Larry Sanderson)
-function! CopyYank() abort
-  call Yank(join(v:event.regcontents, "\n"))
+function! YankPostOscYank() abort
+  call OscYank(join(v:event.regcontents, "\n"))
 endfunction
-autocmd TextYankPost * call CopyYank()
+
+" no support for vim versions before Vim 8.0.1394
+if exists('##TextYankPost')
+  autocmd TextYankPost * call YankPostOscYank()
+endif
 
 " }}}
 
