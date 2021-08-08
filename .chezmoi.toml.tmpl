@@ -1,3 +1,5 @@
+# vim: ft=toml:
+
 {{ $name := get . "name" }}
 {{ if not $name }}
 {{   $name = promptString "name" }}
