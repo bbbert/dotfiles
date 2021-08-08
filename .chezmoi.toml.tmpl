@@ -10,16 +10,32 @@
 {{   $email = promptString "email" }}
 {{ end }}
 
+{{ $base_profile := get . "base_profile" }}
+{{ if not $base_profile }}
+{{   $base_profile = "full" }}
+{{ end }}
+
 {{ $defaults := dict }}
-{{ $_ := set $defaults "install_gitstatus" true }}
-{{ $_ := set $defaults "install_grc" true }}
-{{ $_ := set $defaults "install_fzf" true }}
-{{ $_ := set $defaults "install_rg" true }}
-{{ $_ := set $defaults "install_misc_tools" true }}
+{{ if (eq $base_profile "full") }}
+{{   $_ := set $defaults "install_gitstatus" true }}
+{{   $_ := set $defaults "install_grc" true }}
+{{   $_ := set $defaults "install_fzf" true }}
+{{   $_ := set $defaults "install_rg" true }}
+{{   $_ := set $defaults "install_misc_tools" true }}
+{{ else if (eq $base_profile "minimal") }}
+{{   $_ := set $defaults "install_gitstatus" false }}
+{{   $_ := set $defaults "install_grc" true }}
+{{   $_ := set $defaults "install_fzf" true }}
+{{   $_ := set $defaults "install_rg" true }}
+{{   $_ := set $defaults "install_misc_tools" false }}
+{{ end }}
 
 [data]
   name = {{ $name | quote }}
   email = {{ $email | quote }}
+
+  # profile string which controls the defaults for the flags below
+  base_profile = {{ $base_profile | quote }}
 
   # for fast git status in bash prompt
   install_gitstatus = {{ pluck "install_gitstatus" . $defaults | first }}
