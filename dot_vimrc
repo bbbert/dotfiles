@@ -210,6 +210,16 @@ Plug 'inside/vim-search-pulse'
 
 " }}}
 
+" Local install-only plugins {{{2
+" --------------------------
+
+" Source local .vimrc.plug.local if it exists
+if filereadable(expand("$HOME/.vimrc.plug.local"))
+  source $HOME/.vimrc.plug.local
+endif
+
+" }}}
+
 call plug#end()
 
 " }}}
@@ -481,7 +491,7 @@ call MaybeAirlineRefresh()
 
 autocmd BufWritePost .vimrc* call MaybeAirlineRefresh()
 
-" Source local init.vim if it exists
+" Source local .vimrc if it exists
 if filereadable(expand("$HOME/.vimrc.local"))
   source $HOME/.vimrc.local
 endif
