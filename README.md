@@ -63,7 +63,7 @@ ssh-add -D
 rm $DOTFILES_PRIVATE_KEY_PATH
 ```
 
-If local machine has AWS credentials configured, the following script will
+If the local machine has AWS credentials configured, the following script will
 download a deploy key and the above script, send it and run it on the remote
 machine, then clean up after itself:
 ```bash
