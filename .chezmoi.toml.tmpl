@@ -22,12 +22,14 @@
 {{   $_ := set $defaults "install_fzf" true }}
 {{   $_ := set $defaults "install_rg" true }}
 {{   $_ := set $defaults "install_misc_tools" true }}
+{{   $_ := set $defaults "upgrade_tmux_if_old" true }}
 {{ else if (eq $base_profile "minimal") }}
 {{   $_ := set $defaults "install_gitstatus" false }}
 {{   $_ := set $defaults "install_grc" true }}
 {{   $_ := set $defaults "install_fzf" true }}
 {{   $_ := set $defaults "install_rg" true }}
 {{   $_ := set $defaults "install_misc_tools" false }}
+{{   $_ := set $defaults "upgrade_tmux_if_old" false }}
 {{ end }}
 
 [data]
@@ -51,3 +53,6 @@
 
   # various misc tools
   install_misc_tools = {{ pluck "install_misc_tools" . $defaults | first }}
+
+  # ensure at least tmux version 2.6
+  upgrade_tmux_if_old = {{ pluck "upgrade_tmux_if_old" . $defaults | first }}

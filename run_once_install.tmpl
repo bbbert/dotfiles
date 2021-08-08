@@ -114,6 +114,36 @@ function install_rg() {
   {{ end }}
 }
 
+function build_tmux_from_source() {
+  local TMUX_VERSION=3.2
+  local TMUX_URL="https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz"
+
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")) }}
+    sudo apt-get install -y \
+      build-essential bison pkg-config libevent-dev libncurses-dev
+
+    mkdir -p "${HOME}/bin"
+    wget -q -O- "${TMUX_URL}" | tar -xz -C "${HOME}/bin/"
+    pushd "${HOME}/bin/tmux-${TMUX_VERSION}"
+    ./configure && make && sudo make install
+    popd
+  {{ else }}
+    cannot "build tmux from source"
+  {{ end }}
+}
+
+function upgrade_tmux_if_old() {
+  if command -v tmux &> /dev/null; then
+    TMUX_VERSION=$(tmux -V | cut -d' ' -f2)
+    if awk "BEGIN { exit !($TMUX_VERSION >= 2.6) }" &> /dev/null; then
+      return
+    fi
+  fi
+
+  build_tmux_from_source
+}
+
 ### Perform the actual installation
 
 set -xe
@@ -124,3 +154,4 @@ echo "OS: $HUMAN_READABLE_SYSTEM_CONFIGURATION"
 {{ if .install_fzf }} install_fzf {{ end }}
 {{ if .install_misc_tools }} install_misc_tools {{ end }}
 {{ if .install_rg }} install_rg {{ end }}
+{{ if .upgrade_tmux_if_old }} upgrade_tmux_if_old {{ end }}
