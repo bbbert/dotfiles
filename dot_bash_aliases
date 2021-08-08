@@ -49,6 +49,11 @@ elif
   alias aptu='sudo apt-get update'
 fi
 
+# tmuxp
+if command -v tmuxp &> /dev/null; then
+  alias t='tmux load -y'
+fi
+
 # alias xdg-open to open
 if command -v xdg-open &> /dev/null; then
   if command -v nohup &> /dev/null; then

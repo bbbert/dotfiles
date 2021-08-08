@@ -128,10 +128,10 @@ function install_fzf() {
 function install_misc_tools() {
   {{ if (and (eq .chezmoi.os "linux")
              (eq .chezmoi.osRelease.id "ubuntu")) }}
-    apt_install iftop mtr net-tools nmap pv sysstat traceroute tree
+    apt_install iftop mtr net-tools nmap pv sysstat tmuxp traceroute tree
   {{ else if (and (eq .chezmoi.os "linux")
                   (eq .chezmoi.osRelease.id "arch")) }}
-    pacman_install iftop mtr net-tools nmap pv sysstat traceroute tree
+    pacman_install iftop mtr net-tools nmap pv sysstat tmuxp traceroute tree
   {{ else }}
     cannot "install misc tools"
   {{ end }}
