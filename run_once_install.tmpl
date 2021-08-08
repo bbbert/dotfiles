@@ -34,6 +34,15 @@ function maybe_apt_update() {
   fi
 }
 
+function add_apt_repository() {
+  if command -v add-apt-repository &> /dev/null; then
+    sudo add-apt-repository -y "$1"
+    NEED_APT_UPDATE=1
+  else
+    cannot "add apt repository"
+  fi
+}
+
 function apt_install() {
   maybe_apt_update
   if command -v apt &> /dev/null; then
@@ -77,10 +86,10 @@ function install_fzf() {
   {{ if (and (eq .chezmoi.os "linux")
              (eq .chezmoi.osRelease.id "ubuntu")) }}
     if awk "BEGIN { exit !($UBUNTU_VERSION >= 19.10) }" &> /dev/null; then
-      ## fzf is included in the main repo after 19.10
+      # fzf is included in the main repo after 19.10
       apt_install fzf
     else
-      ## otherwise we'll install it using git
+      # otherwise we'll install it using git
       install_fzf_git
     fi
   {{ else }}
@@ -94,6 +103,21 @@ function install_misc_tools() {
     apt_install iftop net-tools nmap pv sysstat traceroute tree
   {{ else }}
     cannot "install misc tools"
+  {{ end }}
+}
+
+function install_latest_neovim() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")) }}
+    if awk "BEGIN { exit !($UBUNTU_VERSION >= 16.04) }" &> /dev/null; then
+      # the unstable repository has support for 16.04
+      add_apt_repository "ppa:neovim-ppa/unstable"
+      apt_install neovim
+    else
+      cannot "install latest neovim"
+    fi
+  {{ else }}
+    cannot "install latest neovim"
   {{ end }}
 }
 
@@ -153,5 +177,6 @@ echo "OS: $HUMAN_READABLE_SYSTEM_CONFIGURATION"
 {{ if .install_grc }} install_grc {{ end }}
 {{ if .install_fzf }} install_fzf {{ end }}
 {{ if .install_misc_tools }} install_misc_tools {{ end }}
+{{ if .install_latest_neovim }} install_latest_neovim {{ end }}
 {{ if .install_rg }} install_rg {{ end }}
 {{ if .upgrade_tmux_if_old }} upgrade_tmux_if_old {{ end }}
