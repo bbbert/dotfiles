@@ -51,7 +51,7 @@ fi
 
 # tmuxp
 if command -v tmuxp &> /dev/null; then
-  alias t='tmux load -y'
+  alias t='tmuxp load -y'
 fi
 
 # alias xdg-open to open
