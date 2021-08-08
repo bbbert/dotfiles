@@ -1,1 +1,117 @@
-set ts=2 sts=2 sw=2 so=4 et ai si is ic sc modeline nu sm nohls
+" bbbert's minimal vimrc
+" vim: et:sw=2:ts=2:sts=2
+" ------------------------------
+
+" Setup {{{1
+" -----
+
+" Reset autocmds
+autocmd!
+set nocompatible                " I'm using vim after all
+syntax on
+syntax enable                   " Enable syntax highlighting
+set t_Co=256                    " Syntax hghlighting in 256 colours
+
+" }}}
+
+" Editor {{{1
+" ------
+
+" General configuration {{{2
+" ---------------------
+
+set encoding=utf-8
+set number                      " Line numbers
+set cursorline                  " Highlight current line
+set backspace=indent,eol,start  " Enable backspace
+set history=1024                " Many lines of history
+set showcmd                     " Display command at the bottom of vim
+set autoread                    " Reload files that have changed
+set laststatus=2                " Always show the status line
+set lazyredraw                  " Redraw only when needed, not during macros
+
+" }}}
+
+" Mouse {{{2
+" -----
+
+set ttyfast                     " Terminal is fast, send more characters for redrawing
+set mouse=a                     " Enable mouse in all modes
+set ttymouse=xterm2             " TTY mouse support level
+
+" }}}
+
+" Search {{{2
+" ------
+
+set incsearch                   " Enable incremental searching
+set hlsearch                    " Highlight searches
+set ignorecase                  " Ignore case when searching
+set smartcase                   " But only if the search pattern was lowercase
+
+" }}}
+
+" Swap & backup {{{2
+" -------------
+
+set noswapfile                              " Disable swapfiles
+
+set backup                                  " Keep a backup of file
+set writebackup
+set backupcopy=auto                         " Do what's best to backup files
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/tmp  " Directories to backup to
+set backupskip=/tmp                         " Don't write a backup if in the tmp directory
+
+" }}}
+
+" Indentation & display {{{2
+" ---------------------
+
+" 2 spaces per indent level, replace tabs with spaces
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab
+
+set list listchars=tab:\|·,trail:·      " Show tabs and trailing spaces
+set nowrap                              " Don't wrap lines
+set textwidth=0                         " Set textwidth to 0 to prevent hard wrapping
+
+" }}}
+
+" Scrolling {{{2
+" ---------
+
+set scrolloff=8                         " Start scrolling when getting close to borders
+set sidescroll=1                        " Wrap is off, so scroll sideways too
+set sidescrolloff=8                     " In case lines are really long
+
+" }}}
+
+" Folding {{{2
+" -------
+
+set foldmethod=marker                   " Fold according to marker
+
+" }}}
+
+" Completion {{{2
+" ----------
+
+set wildmode=longest,full               " Complete it first, then show all matches
+set wildmenu                            " Show menu
+
+" }}}
+
+" }}}
+
+" Autocmds {{{1
+" --------
+
+" Reload .vimrc automatically after writing to it
+autocmd BufWritePost .vimrc source ~/.vimrc
+
+" }}}
