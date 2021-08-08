@@ -29,6 +29,7 @@ set showcmd                     " Display command at the bottom of vim
 set autoread                    " Reload files that have changed
 set laststatus=2                " Always show the status line
 set lazyredraw                  " Redraw only when needed, not during macros
+set modeline                    " Respect modelines
 
 " }}}
 
