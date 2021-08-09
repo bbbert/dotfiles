@@ -1,36 +1,146 @@
-" Make full text search happen only on file contents instead of also file name
-command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
-command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case ' . shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
-
-" Fuzzy case-insensitive filename search on current word under cursor
-command! -bang -nargs=? -complete=dir FilesWord call fzf#vim#files(<q-args>, {'options': '-i --query '.expand('<cword>')}, <bang>0)
-command! -bang -nargs=? GFilesWord call fzf#vim#gitfiles(<q-args>, {'options': '-i --query '.expand('<cword>')}, <bang>0)
-
-" Switch to other split before executing command if inside the NERD tree.
-function! Do_outside_NERD(command)
-    return (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '') . a:command
+" Get the git root of the cwd
+function! GetGitRoot()
+  let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
+  return v:shell_error ? '' : root
 endfunction
 
-" Fuzzy matching on filenames in cwd
-nnoremap <expr> <Leader>p Do_outside_NERD(":Files\<CR>")
+" Get the active buffer's git root or fall back to its parent directory
+function! GetBufferGitRoot(fallback_to_parent)
+  let buf_parent_dir = expand('%:p:h')
+  let buf_git_root = split(system('cd ' . buf_parent_dir . '; git rev-parse --show-toplevel'), '\n')[0]
+  if a:fallback_to_parent
+    return v:shell_error ? buf_parent_dir : buf_git_root
+  else
+    return v:shell_error ? '' : buf_git_root
+  endif
+endfunction
 
-" Fuzzy case-insensitive filename search on current word under cursor in cwd
-nnoremap <expr> <Leader>wp Do_outside_NERD(":FilesWord\<CR>")
+" Dispatch to fzf commands.
+"
+" code = p|g|m|f
+"   p = filename search
+"   g = filename search among git files
+"   m = filename search among modified (including untracked) files in git
+"   f = full text search
+"
+" use_current_word = initially search for the current word under the cursor
+"
+" use_buffer_dir = for p and f, use the current buffer's git repo root or
+"                  fallback to its parent dir, instead of the cwd
+" use_buffer_dir = for g and m, use the current buffer's git repo root
+"                  instead of the cwd's git repo root
+function! FZFCommand(code, use_current_word, use_buffer_dir)
+  let maybe_query_cword = a:use_current_word 
+    \ ? ' -i --query ' . expand('<cword>') : ''
 
-" Fuzzy matching on filenames in Git repo
-nnoremap <expr> <Leader>g Do_outside_NERD(":GFiles\<CR>")
+  if a:code == 'p'
+    let search_dir = a:use_buffer_dir ? GetBufferGitRoot(1) : ''
+    let fzf_opts = fzf#vim#with_preview({ 'options': maybe_query_cword })
+    call fzf#vim#files(search_dir, fzf_opts, 0)
 
-" Fuzzy case-insensitive filename search on current word under cursor in Git repo
-nnoremap <expr> <Leader>wg Do_outside_NERD(":GFilesWord\<CR>")
+  elseif a:code == 'g' || a:code == 'm'
+    let root = a:use_buffer_dir ? GetBufferGitRoot(0) : GetGitRoot()
+    if empty(root)
+      echoerr (a:use_buffer_dir ? 'buffer ' : 'cwd ') . 'is not in a git repo.'
+      return
+    endif
 
-" Full text search in cwd
-nnoremap <expr> <Leader>f Do_outside_NERD(":Rg\<CR>")
+    let is_win = has('win32') || has('win64')
 
-" Full text search in cwd on current word under cursor
-nnoremap <expr> <Leader>wf Do_outside_NERD(":Rg \<C-r>\<C-w>\<CR>")
+    if a:code == 'g'
+      " duplicate of the fzf ls-files command
+      let fzf_opts = fzf#vim#with_preview({
+        \ 'source':  'git ls-files' . (is_win ? '' : ' | uniq'),
+        \ 'dir':     root,
+        \ 'options': '-m --prompt "GitFiles> "' . maybe_query_cword,
+        \ })
+      return fzf#run(fzf#wrap('gfiles', fzf_opts, 0))
+
+    elseif a:code == 'm'
+      " duplicate of the fzf git status command
+
+      " Here be dragons!
+      " We're trying to access the common sink function that fzf#wrap injects to
+      " the options dictionary.
+      let preview = printf(
+        \ 'bash -c "if [[ {1} =~ M ]]; then %s; else head -n128 {-1}; fi"',
+        \ 'git diff --color=always -- {-1} | sed 1,4d')
+      let wrapped = fzf#wrap({
+        \ 'source':  'git -c color.status=always status --short --untracked-files=all',
+        \ 'dir':     root,
+        \ 'options': [ '--ansi', '--multi', '--nth', '2..,..', '--tiebreak=index',
+        \              '--prompt', 'GitFiles?> ', '--preview', preview ] })
+      for key in ['window', 'up', 'down', 'left', 'right']
+        if has_key(wrapped, key)
+          call remove(wrapped, key)
+        endif
+      endfor
+      let wrapped.common_sink = remove(wrapped, 'sink*')
+      function! wrapped.newsink(lines)
+        let lines = extend(a:lines[0:0], map(a:lines[1:], 'substitute(v:val[3:], ".* -> ", "", "")'))
+        return self.common_sink(lines)
+      endfunction
+      let wrapped['sink*'] = remove(wrapped, 'newsink')
+      return fzf#run(fzf#wrap('gfiles-diff', wrapped, 0))
+    endif
+
+  elseif a:code == 'f'
+    let search_dir = a:use_buffer_dir ? GetBufferGitRoot(1) : ''
+    let search_term = a:use_current_word ? expand('<cword>') : ''
+    let grep_cmd = 'rg --column --line-number --no-heading --color=always'
+      \ . ' --smart-case ' . shellescape(search_term)
+    call fzf#vim#grep(grep_cmd, 1, 
+      \ fzf#vim#with_preview({
+      \   'options': '--delimiter : --nth 4..',
+      \   'dir': search_dir
+      \ }), 0)
+  endif
+endfunction
+command! -nargs=* FZFCommand call FZFCommand(<f-args>)
+
+" Switch to other split before executing command if inside the NERD tree.
+function! OutsideNERD(cmd)
+  return (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '') . a:cmd
+endfunction
+
+" Mapping format: [l][w](p|g|m|f)
+" l = local = use buffer to find root dir or root repo dir
+" w = word = use current word under cursor as initial search
+" p = perform ctrl-P style filename search
+" g = filename search among git-tracked files only
+" m = filename search among all modified or untracked git files
+" f = full text search
+
+" Search filenames
+nnoremap <expr> <Leader>p OutsideNERD(':FZFCommand p 0 0<CR>')
+nnoremap <expr> <Leader>wp OutsideNERD(':FZFCommand p 1 0<CR>')
+nnoremap <expr> <Leader>lp OutsideNERD(':FZFCommand p 0 1<CR>')
+nnoremap <expr> <Leader>lwp OutsideNERD(':FZFCommand p 1 1<CR>')
+nnoremap <expr> <Leader>wlp OutsideNERD(':FZFCommand p 1 1<CR>')
+
+" Search git-tracked filenames
+nnoremap <expr> <Leader>g OutsideNERD(':FZFCommand g 0 0<CR>')
+nnoremap <expr> <Leader>wg OutsideNERD(':FZFCommand g 1 0<CR>')
+nnoremap <expr> <Leader>lg OutsideNERD(':FZFCommand g 0 1<CR>')
+nnoremap <expr> <Leader>lwg OutsideNERD(':FZFCommand g 1 1<CR>')
+nnoremap <expr> <Leader>wlg OutsideNERD(':FZFCommand g 1 1<CR>')
+
+" Search modified filenames in a git repo, whether tracked or not
+nnoremap <expr> <Leader>m OutsideNERD(':FZFCommand m 0 0<CR>')
+nnoremap <expr> <Leader>wm OutsideNERD(':FZFCommand m 1 0<CR>')
+nnoremap <expr> <Leader>lm OutsideNERD(':FZFCommand m 0 1<CR>')
+nnoremap <expr> <Leader>lwm OutsideNERD(':FZFCommand m 1 1<CR>')
+nnoremap <expr> <Leader>wlm OutsideNERD(':FZFCommand m 1 1<CR>')
+
+" Full text search
+nnoremap <expr> <Leader>f OutsideNERD(':FZFCommand f 0 0<CR>')
+nnoremap <expr> <Leader>wf OutsideNERD(':FZFCommand f 1 0<CR>')
+nnoremap <expr> <Leader>lf OutsideNERD(':FZFCommand f 0 1<CR>')
+nnoremap <expr> <Leader>lwf OutsideNERD(':FZFCommand f 1 1<CR>')
+nnoremap <expr> <Leader>wlf OutsideNERD(':FZFCommand f 1 1<CR>')
 
 " Search among the currently open buffers
-nnoremap <expr> <Leader>b Do_outside_NERD(":Buffers\<CR>")
+nnoremap <expr> <Leader>b OutsideNERD(":Buffers<CR>")
 
 " Make it easier to browse the completion window
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
