@@ -275,17 +275,6 @@ let g:NERDTreePatternMatchHighlightFullName = 1
 
 " }}}
 
-" NERDTree devicons fix {{{2
-" ---------------------
-
-" fix brackets around devicons after re-sourcing vimrc
-" https://github.com/ryanoasis/vim-devicons/issues/154
-if exists('g:loaded_webdevicons')
-  call webdevicons#refresh()
-endif
-
-" }}}
-
 " Highlighted yank {{{2
 " ----------------
 
@@ -486,22 +475,32 @@ endif
 " .vimrc loading {{{1
 " --------------
 
-" Reload .vimrc automatically after writing to it
-autocmd BufWritePost .vimrc* source $MYVIMRC
-
-" Also reload Airline if it is loaded
-function! MaybeAirlineRefresh() abort
-  if exists('g:loaded_airline')
-    execute ":AirlineRefresh"
-  endif
-endfunction
-call MaybeAirlineRefresh()
-
-autocmd BufWritePost .vimrc* call MaybeAirlineRefresh()
-
 " Source local .vimrc if it exists
 if filereadable(expand("$HOME/.vimrc.local"))
   source $HOME/.vimrc.local
 endif
+
+if !exists("*ReloadInit")
+  function! ReloadInit() abort
+    source $MYVIMRC
+
+    " Also reload Airline if it is loaded
+    if exists('g:loaded_airline')
+      execute ":AirlineRefresh"
+    endif
+
+    " fix brackets around devicons after re-sourcing vimrc
+    " https://github.com/ryanoasis/vim-devicons/issues/154
+    if exists('g:loaded_webdevicons')
+      call webdevicons#refresh()
+    endif
+  endfunction
+endif
+
+" Reload .vimrc automatically after writing to it
+augroup reloadInit
+  autocmd!
+  autocmd BufWritePost $MYVIMRC call ReloadInit()
+augroup END
 
 " }}}
