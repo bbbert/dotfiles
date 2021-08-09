@@ -122,6 +122,9 @@ Plug 'ggandor/lightspeed.nvim'
 -- Languages {{{2
 -- ---------
 
+-- Treesitter
+Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
+
 -- LaTeX
 --Plug 'lervag/vimtex'
 
@@ -195,9 +198,9 @@ util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
 util.load_config('plugins/subversive.vim')
 util.load_config('plugins/tabular.vim')
-util.load_config('plugins/tmux_navigator.vim')
 util.load_config('plugins/tmuxline.lua')
-
+util.load_config('plugins/tmux_navigator.vim')
+util.load_config('plugins/treesitter.lua')
 util.load_config('colorscheme.vim')
 util.load_config('keymaps.vim')
 
