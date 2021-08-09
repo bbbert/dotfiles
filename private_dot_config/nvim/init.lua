@@ -83,6 +83,9 @@ Plug 'tpope/vim-surround'
 -- tpope's commentary
 Plug 'tpope/vim-commentary'
 
+-- Subversive, works well with abolish
+Plug 'svermeulen/vim-subversive'
+
 -- Custom textobjs
 Plug 'kana/vim-textobj-user'
 
@@ -91,6 +94,7 @@ Plug 'beloglazov/vim-textobj-quotes'     -- aq/iq for quotes
 Plug 'kana/vim-textobj-datetime'         -- ada/ida for dates
 Plug 'kana/vim-textobj-indent'           -- ai/ii, aI/iI for block of lines of similar indentation
 Plug 'kana/vim-textobj-line'             -- al/il for current line
+Plug 'kana/vim-textobj-entire'           -- ae/ie for entire file
 Plug 'kana/vim-textobj-function'         -- af/if for current function
 Plug 'glts/vim-textobj-comment'          -- ac/ic for comment, aC/iC includes surrounding whitespace
 Plug 'whatyouhide/vim-textobj-xmlattr'   -- ax/ix for xml/html attributes
@@ -180,13 +184,13 @@ util.load_config('editor_options.lua')
 util.load_config('plugins/airline.vim')
 util.load_config('plugins/bufkill.vim')
 util.load_config('plugins/fzf.vim')
--- util.load_config('plugins/gitgutter.vim')
 util.load_config('plugins/gitsigns.lua')
 util.load_config('plugins/gundo.vim')
 util.load_config('plugins/highlightedyank.vim')
 util.load_config('plugins/nerdtree.vim')
 util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
+util.load_config('plugins/subversive.vim')
 util.load_config('plugins/tabular.vim')
 util.load_config('plugins/tmux_navigator.vim')
 util.load_config('plugins/tmuxline.lua')
