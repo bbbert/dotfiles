@@ -93,6 +93,15 @@ else
   fi
 fi
 
+# configure fzf
+if command -v bat &> /dev/null; then
+  # if bat is present, use it for preview
+  export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:256 {}'"
+else
+  # use head
+  export FZF_CTRL_T_OPTS="--preview 'head -n256 {}'"
+fi
+
 ### Editor
 
 for POTENTIAL_EDITOR in nvim vim nano; do
