@@ -29,6 +29,9 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+-- Sync tmux config with airline config
+Plug 'edkolev/tmuxline.vim'
+
 -- Git gutter
 Plug 'airblade/vim-gitgutter'
 
@@ -181,6 +184,7 @@ util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
 util.load_config('plugins/tabular.vim')
 util.load_config('plugins/tmux_navigator.vim')
+util.load_config('plugins/tmuxline.lua')
 
 util.load_config('colorscheme.vim')
 util.load_config('keymaps.vim')

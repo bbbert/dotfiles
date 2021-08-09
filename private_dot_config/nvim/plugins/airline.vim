@@ -1,5 +1,11 @@
 let g:airline_powerline_fonts = 1
 
+" Show message about trailing whitespaces
+let g:airline#extensions#whitespace#enabled = 1
+
+" Integration with tmuxline: update tmux when colours are changed
+let g:airline#extensions#tmuxline#enabled = 1
+
 " Airline buffer numbers work like tabs
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
