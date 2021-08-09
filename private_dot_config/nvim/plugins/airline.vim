@@ -7,14 +7,6 @@ let g:airline#extensions#whitespace#enabled = 1
 " Integration with tmuxline: update tmux when colours are changed
 let g:airline#extensions#tmuxline#enabled = 1
 
-" Integration with vim-zoom
-function! CheckZoomed()
-  if exists('g:loaded_zoom') && zoom#statusline() == "zoomed"
-    return "[Z]"
-  endif
-  return ""
-endfunction
-
 " Show [+] beside modified files
 let g:airline_detect_modified = 1
 
@@ -35,9 +27,33 @@ nmap <Leader>= <Plug>AirlineSelectNextTab
 
 " Customize airline
 function! AirlineInit()
+  " Integration with vim-zoom
+  function! AirlineZoom()
+    if exists('g:loaded_zoom') && zoom#statusline() == 'zoomed'
+      return '[Z]'
+    endif
+    return ''
+  endfunction
+
+  " Integration with gitsigns
+  function! AirlineGitsignsStatus()
+    if exists('b:gitsigns_status_dict') && exists('b:gitsigns_status')
+      let branch = ' ' . b:gitsigns_status_dict['head']
+      if b:gitsigns_status == ''
+        return branch
+      else
+        return b:gitsigns_status . ' ' . branch
+      endif
+    endif
+    return ''
+  endfunction
+
   if exists('g:loaded_airline')
-    call airline#parts#define_function('zoomed', 'CheckZoomed')
-    let g:airline_section_c = airline#section#create(['file', 'zoomed', 'readonly'])
+    call airline#parts#define_function('zoom', 'AirlineZoom')
+    call airline#parts#define_function('gitsigns_status', 'AirlineGitsignsStatus')
+
+    let g:airline_section_b = airline#section#create(['gitsigns_status'])
+    let g:airline_section_c = airline#section#create(['file', 'zoom', 'readonly'])
   endif
 endfunction
 

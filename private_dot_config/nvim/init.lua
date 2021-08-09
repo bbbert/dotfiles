@@ -32,8 +32,9 @@ Plug 'vim-airline/vim-airline-themes'
 -- Sync tmux config with airline config
 Plug 'edkolev/tmuxline.vim'
 
--- Git gutter
-Plug 'airblade/vim-gitgutter'
+-- Gitsigns
+Plug 'nvim-lua/plenary.nvim'
+Plug 'lewis6991/gitsigns.nvim' -- needs nvim-lua/plenary.nvim
 
 -- NERDTree
 Plug 'scrooloose/nerdtree'
@@ -179,7 +180,8 @@ util.load_config('editor_options.lua')
 util.load_config('plugins/airline.vim')
 util.load_config('plugins/bufkill.vim')
 util.load_config('plugins/fzf.vim')
-util.load_config('plugins/gitgutter.vim')
+-- util.load_config('plugins/gitgutter.vim')
+util.load_config('plugins/gitsigns.lua')
 util.load_config('plugins/gundo.vim')
 util.load_config('plugins/highlightedyank.vim')
 util.load_config('plugins/nerdtree.vim')
