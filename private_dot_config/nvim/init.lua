@@ -52,6 +52,9 @@ Plug 'junegunn/fzf.vim'
 -- Seamless split navigation with tmux
 Plug 'christoomey/vim-tmux-navigator'
 
+-- Zoom into a split
+Plug 'dhruvasagar/vim-zoom'
+
 -- }}}
 
 -- Colorschemes {{{2
