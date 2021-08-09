@@ -1,6 +1,8 @@
 -- General configuration {{{1
 -- ---------------------
 
+vim.opt.termguicolors = true                   -- Use terminal colours
+
 vim.opt.number = true                          -- Line numbers
 vim.opt.cursorline = true                      -- Highlight current line
 vim.opt.backspace = {'indent', 'eol', 'start'} -- Enable backspace
