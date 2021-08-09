@@ -22,18 +22,26 @@ function maybe_update_tmuxline_conf_from_tmuxline()
     return
   end
 
-  local tmp_path = '/tmp/.tmux.tmuxline.conf'
+  local tmp_path_0 = '/tmp/.tmux.tmuxline.conf.0'
+  local tmp_path_1 = '/tmp/.tmux.tmuxline.conf.1'
   local target_path = vim.fn.expand('$HOME/.tmux.tmuxline.conf')
 
-  -- Run tmuxline into a temporary file and read the results
-  vim.cmd("execute ':TmuxlineSnapshot! " .. tmp_path .. "'")
-  local tmp_file = io.open(tmp_path, 'r')
+  -- Run tmuxline into a temporary file
+  vim.cmd("execute ':TmuxlineSnapshot! " .. tmp_path_0 .. "'")
+
+  -- Skip the second line which contains a timestamp
+  vim.fn.system('head -n1 "' .. tmp_path_0 .. '" > "' .. tmp_path_1 .. '"')
+  vim.fn.system('tail -n+3 "' .. tmp_path_0 .. '" >> "' .. tmp_path_1 .. '"')
+
+  -- Read desired tmuxline output
+  local tmp_file = io.open(tmp_path_1, 'r')
   if tmp_file == nil then
     return
   end
   local tmp_contents = tmp_file:read('*a')
   tmp_file:close()
 
+  -- Read current file contents
   local target_file = io.open(target_path, 'r')
   local target_contents = ''
   if target_file ~= nil then
