@@ -128,7 +128,7 @@ prompt_venv() {
   if [ -z "$VIRTUAL_ENV" ]; then
     return
   else
-    echo -e "${1}($(basename \"$VIRTUAL_ENV\"))"
+    echo -e "${1}($(basename $VIRTUAL_ENV))"
   fi
 }
 
