@@ -60,12 +60,14 @@ vim.opt.tabstop = 2
 vim.opt.expandtab = true
 
 vim.opt.list = true
-vim.opt.listchars = { -- Show tabs and trailing spaces
+vim.opt.listchars = {                -- Show tabs and trailing spaces
   tab = '|·',
   trail = '·',
 }
-vim.opt.wrap = false  -- Don't wrap lines
-vim.opt.textwidth = 0 -- Set textwidth to 0 to prevent hard wrapping
+vim.opt.wrap = false                 -- Don't wrap lines
+vim.opt.textwidth = 0                -- Set textwidth to 0 to prevent hard wrapping
+
+vim.opt.shortmess = 'filmnrxtToOFIc' -- Configure messages to be short
 
 -- }}}
 
@@ -92,10 +94,9 @@ vim.opt.wildmode = { 'longest', 'full' } -- Complete it first, then show all mat
 vim.opt.wildmenu = true                  -- Show menu
 vim.opt.wildoptions = 'pum'              -- Show menu
 vim.opt.completeopt = {
-  'noinsert',
   'menuone',
+  'noinsert',
   'noselect',
-  'preview',
 }
 
 -- }}}

@@ -141,7 +141,3 @@ nnoremap <expr> <Leader>wlf OutsideNERD(':FZFCommand f 1 1<CR>')
 
 " Search among the currently open buffers
 nnoremap <expr> <Leader>b OutsideNERD(":Buffers<CR>")
-
-" Make it easier to browse the completion window
-inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"

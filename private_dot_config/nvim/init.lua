@@ -56,6 +56,16 @@ Plug 'christoomey/vim-tmux-navigator'
 -- Zoom into a split
 Plug 'dhruvasagar/vim-zoom'
 
+-- Completion
+Plug 'hrsh7th/nvim-compe'
+
+-- Snippets
+Plug 'hrsh7th/vim-vsnip'
+
+-- Symbol outline
+-- Plug 'simrat39/symbols-outline.nvim'
+-- Plug 'liuchengxu/vista.vim'
+
 -- }}}
 
 -- Colorschemes {{{2
@@ -125,6 +135,17 @@ Plug 'ggandor/lightspeed.nvim'
 -- Treesitter
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
 
+-- LSP configs
+Plug 'neovim/nvim-lspconfig'
+
+-- Special LSP config for neovim Lua development
+Plug 'folke/lua-dev.nvim'
+
+-- Plug 'glepnir/lspsaga.nvim'
+-- Plug 'ojroques/nvim-lspfuzzy'
+-- Plug 'onsails/lspkind-nvim'
+-- Plug 'liuchengxu/vista.vim'
+
 -- LaTeX
 --Plug 'lervag/vimtex'
 
@@ -186,13 +207,17 @@ vim.call('plug#end')
 local util = require('util')
 
 util.load_config('editor_options.lua')
+util.load_config('colorscheme.vim')
+util.load_config('keymaps.vim')
 
 util.load_config('plugins/airline.vim')
 util.load_config('plugins/bufkill.vim')
+util.load_config('plugins/compe.lua')
 util.load_config('plugins/fzf.vim')
 util.load_config('plugins/gitsigns.lua')
 util.load_config('plugins/gundo.vim')
 util.load_config('plugins/highlightedyank.vim')
+util.load_config('plugins/lspconfig.lua')
 util.load_config('plugins/nerdtree.vim')
 util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
@@ -201,8 +226,7 @@ util.load_config('plugins/tabular.vim')
 util.load_config('plugins/tmuxline.lua')
 util.load_config('plugins/tmux_navigator.vim')
 util.load_config('plugins/treesitter.lua')
-util.load_config('colorscheme.vim')
-util.load_config('keymaps.vim')
+util.load_config('plugins/vsnip.lua')
 
 -- }}}
 

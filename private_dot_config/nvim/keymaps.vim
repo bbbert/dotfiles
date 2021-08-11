@@ -11,6 +11,13 @@ tnoremap <Esc> <C-\><C-n>
 tnoremap <C-w> <C-\><C-n><C-w>
 tnoremap <C-q> <C-\><C-n>:bd!<CR>
 
+" Popup menu navigation
+" ---------------------
+
+" Make it easier to browse the completion window
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
 " Command shortcuts
 " -----------------
 
