@@ -22,8 +22,9 @@ vim.call('plug#begin', vim.fn.stdpath('data') .. '/plugged')
 -- vim-startify
 Plug 'mhinz/vim-startify'
 
--- Filetype icons
+-- Icons
 Plug 'ryanoasis/vim-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
 
 -- Themes for Airline
 Plug 'vim-airline/vim-airline'
@@ -72,6 +73,9 @@ Plug 'folke/lua-dev.nvim'
 
 -- Icons for LSP completion
 Plug 'onsails/lspkind-nvim'
+
+-- Diagnostics
+Plug 'folke/trouble.nvim'
 
 -- FZF integration
 Plug 'gfanto/fzf-lsp.nvim'
@@ -182,14 +186,10 @@ Plug 'zchee/vim-flatbuffers'
 -- Markdown
 Plug('iamcco/markdown-preview.nvim', { ['do'] = 'cd app & yarn install' })
 
--- Terraform
---Plug 'hashivim/vim-terraform'
-
 -- }}}
 
 vim.call('plug#end')
 
-vim.g.instant_username = 'hubert'
 -- }}}
 
 -- Configuration {{{1
@@ -204,6 +204,7 @@ util.load_config('keymaps.vim')
 util.load_config('plugins/airline.vim')
 util.load_config('plugins/bufkill.vim')
 util.load_config('plugins/compe.lua')
+util.load_config('plugins/doge.lua')
 util.load_config('plugins/fzf.vim')
 util.load_config('plugins/gitsigns.lua')
 util.load_config('plugins/gundo.vim')
@@ -219,9 +220,9 @@ util.load_config('plugins/tabular.vim')
 util.load_config('plugins/tmuxline.lua')
 util.load_config('plugins/tmux_navigator.vim')
 util.load_config('plugins/treesitter.lua')
+util.load_config('plugins/trouble.lua')
 util.load_config('plugins/vista.vim')
 util.load_config('plugins/vsnip.lua')
-
 -- }}}
 
 -- init.lua logistics {{{1

@@ -62,4 +62,10 @@ function util.first_executable_command(commands)
   return nil
 end
 
+-- set silent, noremap keymap on current buffer
+function util.buf_set_keymap(mode, keymap, command)
+  local opts = { noremap = true, silent = true }
+  vim.api.nvim_buf_set_keymap(0, mode, keymap, command, opts)
+end
+
 return util
