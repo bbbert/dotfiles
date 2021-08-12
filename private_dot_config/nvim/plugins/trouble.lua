@@ -5,13 +5,14 @@ require('trouble').setup {
 }
 
 -- Toggle diagnostics, the current file only by default
-util.buf_set_keymap('n', '<leader>dd', '<cmd>TroubleToggle<CR>')
+util.global_set_keymap('n', '<Leader>dd', '<Cmd>TroubleToggle<CR>')
+-- vim.cmd "nnoremap <silent> <Leader>dd <Cmd>TroubleToggle<CR>"
 
 -- Show diagnostics for the current file only
-util.buf_set_keymap('n', '<leader>df', '<cmd>TroubleToggle lsp_document_diagnostics<CR>')
+util.global_set_keymap('n', '<Leader>df', '<Cmd>TroubleToggle lsp_document_diagnostics<CR>')
 
 -- Show diagnostics for the whole workspace
-util.buf_set_keymap('n', '<leader>dw', '<cmd>TroubleToggle lsp_workspace_diagnostics<CR>')
+util.global_set_keymap('n', '<Leader>dw', '<Cmd>TroubleToggle lsp_workspace_diagnostics<CR>')
 
 -- Show references for the word under the cursor
-util.buf_set_keymap('n', '<leader>dr', '<cmd>TroubleToggle references<CR>')
+util.global_set_keymap('n', '<Leader>dr', '<Cmd>TroubleToggle references<CR>')

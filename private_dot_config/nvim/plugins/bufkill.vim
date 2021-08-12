@@ -1,2 +1,2 @@
 " Close and unload buffers without closing window
-nnoremap <Leader>q :BD<CR>
+nnoremap <silent> <Leader>q :BD<CR>

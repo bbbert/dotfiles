@@ -99,22 +99,22 @@ endfunction
 command! -nargs=* FZFCommand call FZFCommand(<f-args>)
 
 " Switch to other split before executing command if inside the NERD tree.
-function! OutsideNERD(cmd)
-  return (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '') . a:cmd
+function! OutsideNERD(code)
+  return (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '') . a:code
 endfunction
 
-" Mapping format: <cmd>[l][(w|<cmd>)]
+" Mapping format: <code>[l][(w|<code>)]
 "
-" <cmd> is repeated: perform the command without a pre-filled search
-" just <cmd>: wait for timeoutlen, then perform the command
+" <code> is repeated: perform the command without a pre-filled search
+" just <code>: wait for timeoutlen, then perform the command
 " w: use current word under cursor as initial search
 " l: buffer local; use buffer to find root dir or root repo dir
 " no l: workspace local; use buffer to find root dir or root repo dir
 "
-" <cmd> = p : perform ctrl-P style filename search
-" <cmd> = g : filename search among git-tracked files only
-" <cmd> = m : filename search among all modified or untracked git files
-" <cmd> = f : full text search
+" <code> = p : perform ctrl-P style filename search
+" <code> = g : filename search among git-tracked files only
+" <code> = m : filename search among all modified or untracked git files
+" <code> = f : full text search
 
 " Search filenames
 nnoremap <expr> <Leader>p OutsideNERD(':FZFCommand p 0 0<CR>')

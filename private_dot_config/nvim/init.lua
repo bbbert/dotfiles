@@ -211,7 +211,7 @@ util.load_config('plugins/gundo.vim')
 util.load_config('plugins/highlightedyank.vim')
 util.load_config('plugins/lspconfig.lua')
 util.load_config('plugins/lspkind.lua')
-util.load_config('plugins/nerdtree.vim')
+util.load_config('plugins/nerdtree.lua')
 util.load_config('plugins/nvim_lightbulb.lua')
 util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
@@ -223,6 +223,7 @@ util.load_config('plugins/treesitter.lua')
 util.load_config('plugins/trouble.lua')
 util.load_config('plugins/vista.vim')
 util.load_config('plugins/vsnip.lua')
+
 -- }}}
 
 -- init.lua logistics {{{1

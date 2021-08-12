@@ -52,34 +52,31 @@ local on_attach = function(client, bufnr)
     return
   end
 
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-
   -- Mappings.
-  local opts = { noremap = true, silent = true }
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<leader>cr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  util.buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+  util.buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+  util.buf_set_keymap('n', 'gi', '<Cmd>lua vim.lsp.buf.implementation()<CR>')
+  util.buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.references()<CR>')
+  util.buf_set_keymap('n', 'gt', '<Cmd>lua vim.lsp.buf.type_definition()<CR>')
+  util.buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  util.buf_set_keymap('n', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>')
+  util.buf_set_keymap('n', '<Leader>wa', '<Cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
+  util.buf_set_keymap('n', '<Leader>wr', '<Cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
+  util.buf_set_keymap('n', '<Leader>wl', '<Cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
+  util.buf_set_keymap('n', '<Leader>cr', '<Cmd>lua vim.lsp.buf.rename()<CR>')
+  util.buf_set_keymap('n', '<Leader>ca', '<Cmd>lua vim.lsp.buf.code_action()<CR>')
+  util.buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
+  util.buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
 
   if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<F3>", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    util.buf_set_keymap("n", "<F3>", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
   end
   if client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("x", "<F3>", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
-    buf_set_keymap("n", "gm", "<cmd>lua format_range_operator()<CR>", opts)
+    util.buf_set_keymap("x", "<F3>", "<Cmd>lua vim.lsp.buf.range_formatting()<CR>")
+    util.buf_set_keymap("n", "gm", "<Cmd>lua format_range_operator()<CR>")
   end
-  buf_set_keymap('n', '<F4>', '<cmd>lua lsp_organize_imports()<CR>', opts)
-  buf_set_keymap('n', 'gs', '<cmd>lua lsp_switch_source_header("edit")<CR>', opts)
+  util.buf_set_keymap('n', '<F4>', '<Cmd>lua lsp_organize_imports()<CR>')
+  util.buf_set_keymap('n', 'gs', '<Cmd>lua lsp_switch_source_header("edit")<CR>')
 end
 
 -- Special LSP config for neovim Lua development
@@ -99,7 +96,7 @@ local sumneko_lua_config = function(base_config)
   return require('lua-dev').setup { lspconfig = config }
 end
 
--- Special HTML config
+-- Special HTML config required because binary paths differ
 local html_config = function(base_config)
   local cmd = util.first_executable_command {
     'vscode-html-language-server',

@@ -1,4 +1,4 @@
-function tmux_window_indicator_format()
+local function tmux_window_indicator_format()
   local any_condition = '#{||:#{||:#{window_zoomed_flag},#{window_activity_flag}},#{window_bell_flag}}'
   local left = '#{?' .. any_condition .. ', [,}'
   local right = '#{?' .. any_condition .. ',],}'
@@ -17,7 +17,7 @@ vim.g.tmuxline_preset = {
   y = { '%a', '%Y/%m/%d', '%H:%M' },
 }
 
-function maybe_update_tmuxline_conf_from_tmuxline()
+local function maybe_update_tmuxline_conf_from_tmuxline()
   if vim.fn.exists(':TmuxlineSnapshot') == 0 then
     return
   end
