@@ -140,6 +140,7 @@ Plug 'neovim/nvim-lspconfig'
 -- Special LSP config for neovim Lua development
 Plug 'folke/lua-dev.nvim'
 
+Plug 'onsails/lspkind-nvim'
 -- Plug 'glepnir/lspsaga.nvim'
 -- Plug 'ojroques/nvim-lspfuzzy'
 -- Plug 'onsails/lspkind-nvim'
@@ -217,6 +218,7 @@ util.load_config('plugins/gitsigns.lua')
 util.load_config('plugins/gundo.vim')
 util.load_config('plugins/highlightedyank.vim')
 util.load_config('plugins/lspconfig.lua')
+util.load_config('plugins/lspkind.lua')
 util.load_config('plugins/nerdtree.vim')
 util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
