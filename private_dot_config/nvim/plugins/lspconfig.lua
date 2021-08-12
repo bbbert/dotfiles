@@ -100,6 +100,22 @@ local sumneko_lua_config = function(base_config)
   return require('lua-dev').setup { lspconfig = config }
 end
 
+-- Special HTML config
+local html_config = function(base_config)
+  local cmd = util.first_executable_command {
+    'vscode-html-language-server', 
+    'vscode-html-languageserver', 
+  }
+  if cmd == nil then
+    return
+  end
+
+  local config = util.deepcopy(base_config)
+  config.cmd = { cmd, '--stdio' }
+  return config
+end
+
+
 local make_base_config = function()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -116,9 +132,12 @@ end
 local server_configs = {
   bashls = make_base_config(),
   clangd = make_base_config(),
+  html = html_config(make_base_config()),
   pyright = make_base_config(),
   rust_analyzer = make_base_config(),
   sumneko_lua = sumneko_lua_config(make_base_config()),
+  terraformls = make_base_config(),
+  texlab = make_base_config(),
   tsserver = make_base_config(),
 }
 

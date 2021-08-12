@@ -56,6 +56,9 @@ Plug 'christoomey/vim-tmux-navigator'
 -- Zoom into a split
 Plug 'dhruvasagar/vim-zoom'
 
+-- Instant collaboration
+Plug 'jbyuki/instant.nvim'
+
 -- }}}
 
 -- LSP {{{2
@@ -164,38 +167,20 @@ Plug 'ggandor/lightspeed.nvim'
 -- ---------
 
 -- LaTeX
---Plug 'lervag/vimtex'
-
--- HTML
---Plug 'alvan/vim-closetag'               " Autoclose HTML/XHTML tags
-
--- Colorizer
---Plug 'chrisbra/Colorizer'
+Plug 'lervag/vimtex'
 
 -- GLSL
---Plug 'tikhomirov/vim-glsl'
+Plug 'tikhomirov/vim-glsl'
 
 -- Bazel
---Plug 'google/vim-maktaba'
---Plug 'bazelbuild/vim-bazel'
+Plug 'google/vim-maktaba'
+Plug 'bazelbuild/vim-bazel'
 
 -- Flatbuffers
---Plug 'zchee/vim-flatbuffers'
-
--- Debugging
---Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
-
--- Documentation
---Plug 'kkoomen/vim-doge'
-
--- Coq
---Plug 'whonore/Coqtail'
-
--- Julia
---Plug 'JuliaEditorSupport/julia-vim'
+Plug 'zchee/vim-flatbuffers'
 
 -- Markdown
---Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug('iamcco/markdown-preview.nvim', { ['do'] = 'cd app & yarn install' })
 
 -- Terraform
 --Plug 'hashivim/vim-terraform'
@@ -204,6 +189,7 @@ Plug 'ggandor/lightspeed.nvim'
 
 vim.call('plug#end')
 
+vim.g.instant_username = 'hubert'
 -- }}}
 
 -- Configuration {{{1

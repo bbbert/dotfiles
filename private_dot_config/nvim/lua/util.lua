@@ -41,4 +41,25 @@ function util.deepcopy(orig)
   return copy
 end
 
+-- check if command is executable
+function util.is_executable(command)
+  vim.cmd [[
+    function! CommandIsExecutable(command)
+      call system('which ' . a:command)
+      return v:shell_error == 0
+    endfunction
+  ]]
+  return vim.fn.CommandIsExecutable(command) ~= 0
+end
+
+-- return first executable command
+function util.first_executable_command(commands)
+  for _, potential_command in ipairs(commands) do
+    if util.is_executable(potential_command) then
+      return potential_command
+    end
+  end
+  return nil
+end
+
 return util
