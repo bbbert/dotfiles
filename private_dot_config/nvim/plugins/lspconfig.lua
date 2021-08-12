@@ -92,6 +92,8 @@ local make_base_config = function()
 end
 
 local server_configs = {
+  bashls = make_base_config(),
+  clangd = make_base_config(),
   pyright = make_base_config(),
   rust_analyzer = make_base_config(),
   sumneko_lua = sumneko_lua_config(make_base_config()),

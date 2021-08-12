@@ -58,7 +58,7 @@ fi
 if command -v xdg-open &> /dev/null; then
   if command -v nohup &> /dev/null; then
     # run in the background and don't quit if the terminal quits
-		function open() {
+    function open() {
       nohup xdg-open $@ > /dev/null 2>&1 &
     }
   else
