@@ -1,12 +1,39 @@
 local util = require('util')
 
+local buf_get_clients_table = function(bufnr)
+  local clients = vim.lsp.buf_get_clients(bufnr)
+  local clients_table = {}
+  for _, client in pairs(clients) do
+    clients_table[client.name] = client
+  end
+  return clients_table
+end
+
+_G.organize_imports = function()
+  local clients = buf_get_clients_table(0)
+  if clients['pyright'] ~= nil then
+    vim.lsp.buf.execute_command({
+      command = "pyright.organizeimports",
+      arguments = { vim.uri_from_bufnr(0) },
+    })
+  elseif clients['tsserver'] ~= nil then
+    vim.lsp.buf.execute_command({
+      command = "_typescript.organizeImports",
+      arguments = { vim.uri_from_bufnr(0) },
+    })
+  end
+end
+
 -- Setup keymaps
 local on_attach = function(client, bufnr)
+  if client == nil then
+    return
+  end
+
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
   -- Mappings.
   local opts = { noremap = true, silent = true }
-
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
@@ -24,16 +51,13 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<Space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
-  -- Symbol outline
-  -- buf_set_keymap('n', '<Leader>o', ':SymbolsOutline<CR>', opts)
-
-  if client ~= nil then
-    if client.resolved_capabilities.document_formatting then
-        buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-    elseif client.resolved_capabilities.document_range_formatting then
-        buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-    end
+  if client.resolved_capabilities.document_formatting then
+    buf_set_keymap("n", "<F3>", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   end
+  if client.resolved_capabilities.document_range_formatting then
+    buf_set_keymap("x", "<F3>", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+  end
+  buf_set_keymap('n', '<F4>', '<cmd>lua organize_imports()<CR>', opts)
 end
 
 -- Special LSP config for neovim Lua development
