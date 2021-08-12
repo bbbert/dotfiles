@@ -220,6 +220,16 @@ function install_latest_tmux() {
   {{ end }}
 }
 
+function install_vim_plugins() {
+  # install vim and neovim plugins only if those commands exist
+  if command -v /usr/bin/vim &> /dev/null; then
+    /usr/bin/vim -c ":PlugInstall | qa!"
+  fi
+  if command -v /usr/bin/nvim &> /dev/null; then
+    /usr/bin/nvim -c ":PlugInstall | qa!"
+  fi
+}
+
 function upgrade_tmux_if_old() {
   TMUX_VERSION="$(get_tmux_version)"
   echo tmux: $TMUX_VERSION
@@ -239,7 +249,8 @@ echo "OS: $HUMAN_READABLE_SYSTEM_CONFIGURATION"
 {{ if .install_gitstatus }} install_gitstatus {{ end }}
 {{ if .install_grc }} install_grc {{ end }}
 {{ if .install_fzf }} install_fzf {{ end }}
+{{ if .install_rg }} install_rg {{ end }}
 {{ if .install_misc_tools }} install_misc_tools {{ end }}
 {{ if .install_latest_neovim }} install_latest_neovim {{ end }}
-{{ if .install_rg }} install_rg {{ end }}
+{{ if .install_vim_plugins }} install_vim_plugins {{ end }}
 {{ if .upgrade_tmux_if_old }} upgrade_tmux_if_old {{ end }}

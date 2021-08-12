@@ -23,6 +23,7 @@
 {{   $_ := set $defaults "install_rg" true }}
 {{   $_ := set $defaults "install_misc_tools" true }}
 {{   $_ := set $defaults "install_latest_neovim" true }}
+{{   $_ := set $defaults "install_vim_plugins" true }}
 {{   $_ := set $defaults "upgrade_tmux_if_old" true }}
 {{ else if (eq $base_profile "minimal") }}
 {{   $_ := set $defaults "install_gitstatus" false }}
@@ -31,6 +32,7 @@
 {{   $_ := set $defaults "install_rg" true }}
 {{   $_ := set $defaults "install_misc_tools" false }}
 {{   $_ := set $defaults "install_latest_neovim" false }}
+{{   $_ := set $defaults "install_vim_plugins" false }}
 {{   $_ := set $defaults "upgrade_tmux_if_old" false }}
 {{ end }}
 
@@ -58,6 +60,9 @@
 
   # install neovim at least >= 0.5
   install_latest_neovim = {{ pluck "install_latest_neovim" . $defaults | first }}
+
+  # pre-install vim and neovim plugins
+  install_vim_plugins = {{ pluck "install_vim_plugins" . $defaults | first }}
 
   # ensure at least tmux version 2.6
   upgrade_tmux_if_old = {{ pluck "upgrade_tmux_if_old" . $defaults | first }}
