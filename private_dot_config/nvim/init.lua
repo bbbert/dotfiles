@@ -194,32 +194,32 @@ vim.call('plug#end')
 
 local util = require('util')
 
-util.load_config('colorscheme.vim')
-util.load_config('editor_options.lua')
-util.load_config('keymaps.vim')
+util.source 'editor/colorscheme.vim'
+util.source 'editor/options.lua'
+util.source 'editor/keymaps.vim'
 
-util.load_config('plugins/airline.vim')
-util.load_config('plugins/bufkill.vim')
-util.load_config('plugins/compe.lua')
-util.load_config('plugins/doge.lua')
-util.load_config('plugins/fzf.vim')
-util.load_config('plugins/gitsigns.lua')
-util.load_config('plugins/gundo.vim')
-util.load_config('plugins/highlightedyank.vim')
-util.load_config('plugins/lspconfig.lua')
-util.load_config('plugins/lspkind.lua')
-util.load_config('plugins/nerdtree.lua')
-util.load_config('plugins/nvim_lightbulb.lua')
-util.load_config('plugins/search_pulse.vim')
-util.load_config('plugins/startify.vim')
-util.load_config('plugins/subversive.vim')
-util.load_config('plugins/tabular.vim')
-util.load_config('plugins/tmuxline.lua')
-util.load_config('plugins/tmux_navigator.vim')
-util.load_config('plugins/treesitter.lua')
-util.load_config('plugins/trouble.lua')
-util.load_config('plugins/vista.vim')
-util.load_config('plugins/vsnip.lua')
+util.source 'plugins/airline.vim'
+util.source 'plugins/bufkill.vim'
+util.source 'plugins/compe.lua'
+util.source 'plugins/doge.lua'
+util.source 'plugins/fzf.vim'
+util.source 'plugins/gitsigns.lua'
+util.source 'plugins/gundo.vim'
+util.source 'plugins/highlightedyank.vim'
+util.source 'plugins/lspconfig.lua'
+util.source 'plugins/lspkind.lua'
+util.source 'plugins/nerdtree.lua'
+util.source 'plugins/nvim_lightbulb.lua'
+util.source 'plugins/search_pulse.vim'
+util.source 'plugins/startify.vim'
+util.source 'plugins/subversive.vim'
+util.source 'plugins/tabular.vim'
+util.source 'plugins/tmuxline.lua'
+util.source 'plugins/tmux_navigator.vim'
+util.source 'plugins/treesitter.lua'
+util.source 'plugins/trouble.lua'
+util.source 'plugins/vista.vim'
+util.source 'plugins/vsnip.lua'
 
 -- }}}
 
@@ -227,10 +227,10 @@ util.load_config('plugins/vsnip.lua')
 -- ------------------
 
 -- Source local configuration files if they exist
-util.load_config_if_present('init.local.vim')
-util.load_config_if_present('init.local.lua')
+util.source_if_present 'init.local.vim'
+util.source_if_present 'init.local.lua'
 
 -- Reload init.lua automatically after writing to it
-util.load_config('reload.vim')
+require('reload').setup()
 
 -- }}}

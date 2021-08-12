@@ -1,61 +1,53 @@
-local util = {}
+local M = {}
 
--- force loading a module
--- useful for enabling nvim configuration auto-reloading
-function util.force_require(module)
-  if package.loaded[module] ~= nil then
-    package.loaded[module] = nil
-  end
-  return require(module)
-end
+local config_path = vim.fn.stdpath('config')
 
-local config_path = vim.fn.stdpath('config') .. '/'
-
--- source a file and error if it does not exist
-function util.load_config(config_subpath)
-  local path = config_path .. config_subpath
+-- Source a file and error if it does not exist
+function M.source(config_subpath)
+  local path = config_path .. '/' .. config_subpath
   vim.cmd('source ' .. path)
 end
 
--- source a file but don't error if it does not exist
-function util.load_config_if_present(config_subpath)
-  local path = config_path .. config_subpath
+-- Source a file only if it exists
+function M.source_if_present(config_subpath)
+  local path = config_path .. '/' .. config_subpath
   if vim.fn.filereadable(path) == 1 then
     vim.cmd('source ' .. path)
   end
 end
 
--- deep copy a table
-function util.deepcopy(orig)
+-- Deep copy a table
+function M.deepcopy(orig)
   local orig_type = type(orig)
   local copy
   if orig_type == 'table' then
     copy = {}
     for orig_key, orig_value in next, orig, nil do
-      copy[util.deepcopy(orig_key)] = util.deepcopy(orig_value)
+      copy[M.deepcopy(orig_key)] = M.deepcopy(orig_value)
     end
-    setmetatable(copy, util.deepcopy(getmetatable(orig)))
+    setmetatable(copy, M.deepcopy(getmetatable(orig)))
   else
     copy = orig
   end
   return copy
 end
 
--- check if command is executable
-function util.is_executable(command)
-  vim.cmd [[
-    function! CommandIsExecutable(command)
-      call system('which ' . a:command)
-      return v:shell_error == 0
-    endfunction
-  ]]
+vim.cmd [[
+  function! CommandIsExecutable(command)
+    call system('command -v ' . a:command)
+    return v:shell_error == 0
+  endfunction
+]]
+
+-- Check if a system command is executable
+function M.is_executable(command)
   return vim.fn.CommandIsExecutable(command) ~= 0
 end
 
 -- return first executable command
-function util.first_executable_command(commands)
+function M.first_executable_command(commands)
   for _, potential_command in ipairs(commands) do
-    if util.is_executable(potential_command) then
+    if M.is_executable(potential_command) then
       return potential_command
     end
   end
@@ -63,15 +55,15 @@ function util.first_executable_command(commands)
 end
 
 -- set silent, noremap global keymap
-function util.global_set_keymap(mode, keymap, command)
+function M.global_set_keymap(mode, keymap, command)
   local opts = { noremap = true, silent = true }
   vim.api.nvim_set_keymap(mode, keymap, command, opts)
 end
 
 -- set silent, noremap keymap on current buffer
-function util.buf_set_keymap(mode, keymap, command)
+function M.buf_set_keymap(mode, keymap, command)
   local opts = { noremap = true, silent = true }
   vim.api.nvim_buf_set_keymap(0, mode, keymap, command, opts)
 end
 
-return util
+return M

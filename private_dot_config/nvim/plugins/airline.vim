@@ -48,17 +48,26 @@ function! AirlineInit()
     return ''
   endfunction
 
-  if exists('g:loaded_airline')
-    call airline#parts#define_function('zoom', 'AirlineZoom')
-    call airline#parts#define_function('gitsigns_status', 'AirlineGitsignsStatus')
+  call airline#parts#define_function('zoom', 'AirlineZoom')
+  call airline#parts#define_function('gitsigns_status', 'AirlineGitsignsStatus')
 
-    let g:airline_section_b = airline#section#create(['gitsigns_status'])
-    let g:airline_section_c = airline#section#create(['file', 'zoom', 'readonly'])
-  endif
+  let g:airline_section_b = airline#section#create(['gitsigns_status'])
+  let g:airline_section_c = airline#section#create(['file', 'zoom', 'readonly'])
 endfunction
 
 " Call airline customization functions once airline is loaded
-augroup airlineInit
+augroup AirlineInit
   autocmd!
   autocmd VimEnter * call AirlineInit()
 augroup END
+
+" Refresh airline after reloading the init configuration
+lua << EOF
+require('reload').post_reload_hook('airline_refresh', function()
+  vim.cmd [[
+    if exists(':AirlineRefresh') == 2
+      execute ':AirlineRefresh'
+    endif
+  ]]
+end)
+EOF
