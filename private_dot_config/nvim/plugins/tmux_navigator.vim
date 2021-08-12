@@ -17,7 +17,7 @@ nnoremap <silent> `l :TmuxNavigateRight<CR>
 " Split panes with same keybindings as tmux
 nnoremap <silent> <C-w>\| <C-w><C-v>
 nnoremap <silent> <C-w>- <C-w><C-s>
-nnoremap <silent> `\| <C-w><C-v>
-nnoremap <silent> `- <C-w><C-s>
+" nnoremap <silent> `\| <C-w><C-v>
+" nnoremap <silent> `- <C-w><C-s>
 
 " Note that this means hjkl-| are not available as marks

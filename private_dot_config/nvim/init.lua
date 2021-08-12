@@ -162,9 +162,6 @@ Plug 'triglav/vim-visual-increment'
 -- Vim search pulse
 Plug 'inside/vim-search-pulse'
 
--- Lightspeed movements (replaces sSfFtT movements in normal and visual mode)
-Plug 'ggandor/lightspeed.nvim'
-
 -- }}}
 
 -- Languages {{{2
