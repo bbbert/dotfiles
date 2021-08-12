@@ -24,6 +24,19 @@ _G.organize_imports = function()
   end
 end
 
+_G.format_range_operator = function()
+  local old_func = vim.go.operatorfunc
+  _G.op_func_formatting = function()
+    local start = vim.api.nvim_buf_get_mark(0, '[')
+    local finish = vim.api.nvim_buf_get_mark(0, ']')
+    vim.lsp.buf.range_formatting({}, start, finish)
+    vim.go.operatorfunc = old_func
+    _G.op_func_formatting = nil
+  end
+  vim.go.operatorfunc = 'v:lua.op_func_formatting'
+  vim.api.nvim_feedkeys('g@', 'n', false)
+end
+
 -- Setup keymaps
 local on_attach = function(client, bufnr)
   if client == nil then
@@ -56,6 +69,7 @@ local on_attach = function(client, bufnr)
   end
   if client.resolved_capabilities.document_range_formatting then
     buf_set_keymap("x", "<F3>", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+    buf_set_keymap("n", "gm", "<cmd>lua format_range_operator()<CR>", opts)
   end
   buf_set_keymap('n', '<F4>', '<cmd>lua organize_imports()<CR>', opts)
 end
