@@ -1,2 +1,2 @@
-" Align text in columns
-nnoremap <Leader>t :<C-u>Tabularize /=
+" Align text in columns by the equal sign
+nnoremap <Leader>a= :<C-u>Tabularize /=<CR>

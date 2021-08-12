@@ -10,6 +10,7 @@ vim.opt.history = 1024                         -- Many lines of history
 vim.opt.autoread = true                        -- Reload files that have changed
 vim.opt.lazyredraw = true                      -- Redraw only when needed, not during macros
 vim.opt.modeline = true                        -- Respect modelines
+vim.opt.timeoutlen = 300                       -- Don't wait so long for prefix commands
 
 -- }}}
 

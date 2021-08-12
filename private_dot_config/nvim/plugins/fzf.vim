@@ -103,41 +103,50 @@ function! OutsideNERD(cmd)
   return (expand('%') =~ 'NERD_tree' ? "\<C-W>\<C-W>" : '') . a:cmd
 endfunction
 
-" Mapping format: [l][w](p|g|m|f)
-" l = local = use buffer to find root dir or root repo dir
-" w = word = use current word under cursor as initial search
-" p = perform ctrl-P style filename search
-" g = filename search among git-tracked files only
-" m = filename search among all modified or untracked git files
-" f = full text search
+" Mapping format: <cmd>[l][(w|<cmd>)]
+"
+" <cmd> is repeated: perform the command without a pre-filled search
+" just <cmd>: wait for timeoutlen, then perform the command
+" w: use current word under cursor as initial search
+" l: buffer local; use buffer to find root dir or root repo dir
+" no l: workspace local; use buffer to find root dir or root repo dir
+"
+" <cmd> = p : perform ctrl-P style filename search
+" <cmd> = g : filename search among git-tracked files only
+" <cmd> = m : filename search among all modified or untracked git files
+" <cmd> = f : full text search
 
 " Search filenames
 nnoremap <expr> <Leader>p OutsideNERD(':FZFCommand p 0 0<CR>')
-nnoremap <expr> <Leader>wp OutsideNERD(':FZFCommand p 1 0<CR>')
-nnoremap <expr> <Leader>lp OutsideNERD(':FZFCommand p 0 1<CR>')
-nnoremap <expr> <Leader>lwp OutsideNERD(':FZFCommand p 1 1<CR>')
-nnoremap <expr> <Leader>wlp OutsideNERD(':FZFCommand p 1 1<CR>')
+nnoremap <expr> <Leader>pp OutsideNERD(':FZFCommand p 0 0<CR>')
+nnoremap <expr> <Leader>pw OutsideNERD(':FZFCommand p 1 0<CR>')
+nnoremap <expr> <Leader>pl OutsideNERD(':FZFCommand p 0 1<CR>')
+nnoremap <expr> <Leader>plp OutsideNERD(':FZFCommand p 0 1<CR>')
+nnoremap <expr> <Leader>plw OutsideNERD(':FZFCommand p 1 1<CR>')
 
 " Search git-tracked filenames
 nnoremap <expr> <Leader>g OutsideNERD(':FZFCommand g 0 0<CR>')
-nnoremap <expr> <Leader>wg OutsideNERD(':FZFCommand g 1 0<CR>')
-nnoremap <expr> <Leader>lg OutsideNERD(':FZFCommand g 0 1<CR>')
-nnoremap <expr> <Leader>lwg OutsideNERD(':FZFCommand g 1 1<CR>')
-nnoremap <expr> <Leader>wlg OutsideNERD(':FZFCommand g 1 1<CR>')
+nnoremap <expr> <Leader>gg OutsideNERD(':FZFCommand g 0 0<CR>')
+nnoremap <expr> <Leader>gw OutsideNERD(':FZFCommand g 1 0<CR>')
+nnoremap <expr> <Leader>gl OutsideNERD(':FZFCommand g 0 1<CR>')
+nnoremap <expr> <Leader>glg OutsideNERD(':FZFCommand g 0 1<CR>')
+nnoremap <expr> <Leader>glw OutsideNERD(':FZFCommand g 1 1<CR>')
 
 " Search modified filenames in a git repo, whether tracked or not
 nnoremap <expr> <Leader>m OutsideNERD(':FZFCommand m 0 0<CR>')
-nnoremap <expr> <Leader>wm OutsideNERD(':FZFCommand m 1 0<CR>')
-nnoremap <expr> <Leader>lm OutsideNERD(':FZFCommand m 0 1<CR>')
-nnoremap <expr> <Leader>lwm OutsideNERD(':FZFCommand m 1 1<CR>')
-nnoremap <expr> <Leader>wlm OutsideNERD(':FZFCommand m 1 1<CR>')
+nnoremap <expr> <Leader>mm OutsideNERD(':FZFCommand m 0 0<CR>')
+nnoremap <expr> <Leader>mw OutsideNERD(':FZFCommand m 1 0<CR>')
+nnoremap <expr> <Leader>ml OutsideNERD(':FZFCommand m 0 1<CR>')
+nnoremap <expr> <Leader>mlm OutsideNERD(':FZFCommand m 0 1<CR>')
+nnoremap <expr> <Leader>mlw OutsideNERD(':FZFCommand m 1 1<CR>')
 
 " Full text search
 nnoremap <expr> <Leader>f OutsideNERD(':FZFCommand f 0 0<CR>')
-nnoremap <expr> <Leader>wf OutsideNERD(':FZFCommand f 1 0<CR>')
-nnoremap <expr> <Leader>lf OutsideNERD(':FZFCommand f 0 1<CR>')
-nnoremap <expr> <Leader>lwf OutsideNERD(':FZFCommand f 1 1<CR>')
-nnoremap <expr> <Leader>wlf OutsideNERD(':FZFCommand f 1 1<CR>')
+nnoremap <expr> <Leader>ff OutsideNERD(':FZFCommand f 0 0<CR>')
+nnoremap <expr> <Leader>fw OutsideNERD(':FZFCommand f 1 0<CR>')
+nnoremap <expr> <Leader>fl OutsideNERD(':FZFCommand f 0 1<CR>')
+nnoremap <expr> <Leader>flf OutsideNERD(':FZFCommand f 0 1<CR>')
+nnoremap <expr> <Leader>flw OutsideNERD(':FZFCommand f 1 1<CR>')
 
 " Search among the currently open buffers
 nnoremap <expr> <Leader>b OutsideNERD(":Buffers<CR>")
