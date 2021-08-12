@@ -56,6 +56,34 @@ Plug 'christoomey/vim-tmux-navigator'
 -- Zoom into a split
 Plug 'dhruvasagar/vim-zoom'
 
+-- }}}
+
+-- LSP {{{2
+-- ---
+
+-- LSP configs
+Plug 'neovim/nvim-lspconfig'
+
+-- Special LSP config for neovim Lua development
+Plug 'folke/lua-dev.nvim'
+
+-- Icons for LSP completion
+Plug 'onsails/lspkind-nvim'
+
+-- FZF integration
+Plug 'gfanto/fzf-lsp.nvim'
+
+-- Lightbulb beside code actions
+Plug 'kosayoda/nvim-lightbulb'
+
+-- Treesitter
+Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
+
+-- }}}
+
+-- Code tools {{{2
+-- ----------
+
 -- Completion
 Plug 'hrsh7th/nvim-compe'
 
@@ -64,6 +92,9 @@ Plug 'hrsh7th/vim-vsnip'
 
 -- Symbol outline
 Plug 'liuchengxu/vista.vim'
+
+-- Documentation generator
+Plug('kkoomen/vim-doge', { ['do'] = ':call doge#install()' })
 
 -- }}}
 
@@ -104,9 +135,10 @@ Plug 'kana/vim-textobj-datetime'         -- ada/ida for dates
 Plug 'kana/vim-textobj-indent'           -- ai/ii, aI/iI for block of lines of similar indentation
 Plug 'kana/vim-textobj-line'             -- al/il for current line
 Plug 'kana/vim-textobj-entire'           -- ae/ie for entire file
-Plug 'kana/vim-textobj-function'         -- af/if for current function
-Plug 'glts/vim-textobj-comment'          -- ac/ic for comment, aC/iC includes surrounding whitespace
 Plug 'whatyouhide/vim-textobj-xmlattr'   -- ax/ix for xml/html attributes
+
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'RRethy/nvim-treesitter-textsubjects'
 
 -- Tabular
 Plug 'godlygeek/tabular'
@@ -131,41 +163,14 @@ Plug 'ggandor/lightspeed.nvim'
 -- Languages {{{2
 -- ---------
 
--- Treesitter
-Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
-
--- LSP configs
-Plug 'neovim/nvim-lspconfig'
-
--- Special LSP config for neovim Lua development
-Plug 'folke/lua-dev.nvim'
-
-Plug 'onsails/lspkind-nvim'
--- Plug 'glepnir/lspsaga.nvim'
--- Plug 'ojroques/nvim-lspfuzzy'
--- Plug 'onsails/lspkind-nvim'
--- Plug 'liuchengxu/vista.vim'
-
 -- LaTeX
 --Plug 'lervag/vimtex'
-
--- Rust
---Plug 'rust-lang/rust.vim'
-
--- Python semantic highlighting
---Plug('numirias/semshi', {'do' = ':UpdateRemotePlugins'})
 
 -- HTML
 --Plug 'alvan/vim-closetag'               " Autoclose HTML/XHTML tags
 
 -- Colorizer
 --Plug 'chrisbra/Colorizer'
-
--- Typescript & TSX
---Plug 'pangloss/vim-javascript'
---Plug 'leafgarland/typescript-vim'
---Plug 'peitalin/vim-jsx-typescript'
---Plug 'suy/vim-context-commentstring'
 
 -- GLSL
 --Plug 'tikhomirov/vim-glsl'
@@ -220,6 +225,7 @@ util.load_config('plugins/highlightedyank.vim')
 util.load_config('plugins/lspconfig.lua')
 util.load_config('plugins/lspkind.lua')
 util.load_config('plugins/nerdtree.vim')
+util.load_config('plugins/nvim_lightbulb.lua')
 util.load_config('plugins/search_pulse.vim')
 util.load_config('plugins/startify.vim')
 util.load_config('plugins/subversive.vim')

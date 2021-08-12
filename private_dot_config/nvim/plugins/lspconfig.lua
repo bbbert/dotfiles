@@ -9,7 +9,7 @@ local buf_get_clients_table = function(bufnr)
   return clients_table
 end
 
-_G.organize_imports = function()
+_G.lsp_organize_imports = function()
   local clients = buf_get_clients_table(0)
   if clients['pyright'] ~= nil then
     vim.lsp.buf.execute_command({
@@ -37,6 +37,15 @@ _G.format_range_operator = function()
   vim.api.nvim_feedkeys('g@', 'n', false)
 end
 
+_G.lsp_switch_source_header = function(splitcmd)
+  local params = { uri = vim.uri_from_bufnr(0) }
+  vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', params, function(err, _, result)
+    if err then return end
+    if not result then print("Corresponding file can’t be determined") return end
+    vim.api.nvim_command(splitcmd .. ' ' .. vim.uri_to_fname(result))
+  end)
+end
+
 -- Setup keymaps
 local on_attach = function(client, bufnr)
   if client == nil then
@@ -49,20 +58,19 @@ local on_attach = function(client, bufnr)
   local opts = { noremap = true, silent = true }
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<Space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<Space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<Space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<Space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<Space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<Space>cr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<Space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<Space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<Space>d', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<Space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   if client.resolved_capabilities.document_formatting then
     buf_set_keymap("n", "<F3>", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
@@ -71,7 +79,8 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("x", "<F3>", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
     buf_set_keymap("n", "gm", "<cmd>lua format_range_operator()<CR>", opts)
   end
-  buf_set_keymap('n', '<F4>', '<cmd>lua organize_imports()<CR>', opts)
+  buf_set_keymap('n', '<F4>', '<cmd>lua lsp_organize_imports()<CR>', opts)
+  buf_set_keymap('n', 'gs', '<cmd>lua lsp_switch_source_header("edit")<CR>', opts)
 end
 
 -- Special LSP config for neovim Lua development
@@ -90,7 +99,6 @@ local sumneko_lua_config = function(base_config)
   config.cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' }
   return require('lua-dev').setup { lspconfig = config }
 end
-
 
 local make_base_config = function()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -117,3 +125,5 @@ local server_configs = {
 for lsp, config in pairs(server_configs) do
   require('lspconfig')[lsp].setup(config)
 end
+
+require('fzf_lsp').setup()
