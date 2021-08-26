@@ -60,6 +60,9 @@ Plug 'dhruvasagar/vim-zoom'
 -- Instant collaboration
 Plug 'jbyuki/instant.nvim'
 
+-- Minimap
+Plug 'wfxr/minimap.vim'
+
 -- }}}
 
 -- LSP {{{2
@@ -208,6 +211,7 @@ util.source 'plugins/gundo.vim'
 util.source 'plugins/highlightedyank.vim'
 util.source 'plugins/lspconfig.lua'
 util.source 'plugins/lspkind.lua'
+util.source 'plugins/minimap.vim'
 util.source 'plugins/nerdtree.lua'
 util.source 'plugins/nvim_lightbulb.lua'
 util.source 'plugins/search_pulse.vim'
