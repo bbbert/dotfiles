@@ -1,5 +1,7 @@
 let g:vista_default_executive = 'ctags'
 
+let g:vista_sidebar_width = 40
+
 " By default vista.vim never runs if you don't call it explicitly.
 "
 " If you want to show the nearest function in your statusline automatically,
