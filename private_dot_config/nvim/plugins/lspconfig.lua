@@ -67,6 +67,7 @@ local on_attach = function(client, bufnr)
   util.buf_set_keymap('n', '<Leader>ca', '<Cmd>lua vim.lsp.buf.code_action()<CR>')
   util.buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
   util.buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
+  util.buf_set_keymap('n', '<Leader>dd', '<Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
 
   if client.resolved_capabilities.document_formatting then
     util.buf_set_keymap("n", "<F3>", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
@@ -78,39 +79,6 @@ local on_attach = function(client, bufnr)
   util.buf_set_keymap('n', '<F4>', '<Cmd>lua lsp_organize_imports()<CR>')
   util.buf_set_keymap('n', 'gs', '<Cmd>lua lsp_switch_source_header("edit")<CR>')
 end
-
--- Special LSP config for neovim Lua development
-local sumneko_lua_config = function(base_config)
-  -- set the path to the sumneko installation
-  local sumneko_root_path = '/usr/share/lua-language-server'
-  local sumneko_binary = '/usr/bin/lua-language-server'
-
-  -- skip if we cannot find the binary
-  if (vim.fn.filereadable(sumneko_binary) == 0
-      or vim.fn.isdirectory(sumneko_root_path) == 0) then
-    return nil
-  end
-
-  local config = util.deepcopy(base_config)
-  config.cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' }
-  return require('lua-dev').setup { lspconfig = config }
-end
-
--- Special HTML config required because binary paths differ
-local html_config = function(base_config)
-  local cmd = util.first_executable_command {
-    'vscode-html-language-server',
-    'vscode-html-languageserver',
-  }
-  if cmd == nil then
-    return
-  end
-
-  local config = util.deepcopy(base_config)
-  config.cmd = { cmd, '--stdio' }
-  return config
-end
-
 
 local make_base_config = function()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -125,20 +93,48 @@ local make_base_config = function()
   }
 end
 
-local server_configs = {
-  bashls = make_base_config(),
-  clangd = make_base_config(),
-  html = html_config(make_base_config()),
-  pyright = make_base_config(),
-  rust_analyzer = make_base_config(),
-  sumneko_lua = sumneko_lua_config(make_base_config()),
-  terraformls = make_base_config(),
-  texlab = make_base_config(),
-  tsserver = make_base_config(),
+-- List of servers to initialize with the base config, unless they are overriden
+-- by a server-specific config in <server_override_dir>/<server>.lua
+local default_servers = {
+  'bashls',
+  'clangd',
+  'pyright',
+  'rust_analyzer',
+  'terraformls',
+  'texlab',
+  'tsserver',
 }
 
-for lsp, config in pairs(server_configs) do
-  require('lspconfig')[lsp].setup(config)
+-- Server-specific config overrides
+local server_override_dir = vim.fn.expand('%:p:h') .. '/lspconfig'
+local server_overrides = vim.fn.globpath(server_override_dir, '*.lua', 0, 1)
+local local_server_overrides = vim.fn.globpath(server_override_dir, '*.local.lua', 0, 1)
+
+local function setup_lsp_server_override(server_override_path)
+  local filename = vim.fn['maktaba#path#Basename'](server_override_path)
+  local lsp = vim.fn.split(filename, '\\.')[1]
+  local server_module = dofile(server_override_path)
+  if util.is_callable(server_module.modify_base_config) then
+    local config = server_module.modify_base_config(make_base_config())
+    if config ~= nil then
+      require('lspconfig')[lsp].setup(config)
+    end
+  end
+end
+
+-- Initialize default servers first
+for _, lsp in ipairs(default_servers) do
+  require('lspconfig')[lsp].setup(make_base_config())
+end
+
+-- Override with server-specific overrides
+for _, server_override_path in ipairs(server_overrides) do
+  setup_lsp_server_override(server_override_path)
+end
+
+-- Override with local server-specific overrides
+for _, server_override_path in ipairs(local_server_overrides) do
+  setup_lsp_server_override(server_override_path)
 end
 
 require('fzf_lsp').setup()

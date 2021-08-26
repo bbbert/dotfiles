@@ -66,4 +66,16 @@ function M.buf_set_keymap(mode, keymap, command)
   vim.api.nvim_buf_set_keymap(0, mode, keymap, command, opts)
 end
 
+-- check if an object is callable
+function M.is_callable(object)
+  if type(object) == 'function' then
+    return true
+  elseif type(object) == 'table' then
+    local meta = getmetatable(object)
+    return type(meta) == 'table' and type(meta.__call) == 'function'
+  else
+    return false
+  end
+end
+
 return M

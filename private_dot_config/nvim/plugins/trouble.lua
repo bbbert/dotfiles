@@ -5,7 +5,7 @@ require('trouble').setup {
 }
 
 -- Toggle diagnostics, the current file only by default
-util.global_set_keymap('n', '<Leader>dd', '<Cmd>TroubleToggle<CR>')
+util.global_set_keymap('n', '<Leader>dt', '<Cmd>TroubleToggle<CR>')
 -- vim.cmd "nnoremap <silent> <Leader>dd <Cmd>TroubleToggle<CR>"
 
 -- Show diagnostics for the current file only
