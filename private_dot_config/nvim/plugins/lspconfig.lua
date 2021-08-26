@@ -106,35 +106,48 @@ local default_servers = {
 }
 
 -- Server-specific config overrides
-local server_override_dir = vim.fn.expand('%:p:h') .. '/lspconfig'
+local server_override_dir = vim.fn.stdpath('config') .. '/plugins/lspconfig'
 local server_overrides = vim.fn.globpath(server_override_dir, '*.lua', 0, 1)
 local local_server_overrides = vim.fn.globpath(server_override_dir, '*.local.lua', 0, 1)
 
-local function setup_lsp_server_override(server_override_path)
+local function get_server_override_config(server_override_path)
   local filename = vim.fn['maktaba#path#Basename'](server_override_path)
   local lsp = vim.fn.split(filename, '\\.')[1]
+
   local server_module = dofile(server_override_path)
   if util.is_callable(server_module.modify_base_config) then
     local config = server_module.modify_base_config(make_base_config())
-    if config ~= nil then
-      require('lspconfig')[lsp].setup(config)
-    end
+    return lsp, config
+  end
+  return lsp, nil
+end
+
+local server_configs = {}
+
+-- Start with default configs
+for _, lsp in ipairs(default_servers) do
+  server_configs[lsp] = make_base_config()
+end
+
+-- Override with server-specific configs
+for _, server_override_path in ipairs(server_overrides) do
+  local lsp, config = get_server_override_config(server_override_path)
+  if config ~= nil then
+    server_configs[lsp] = config
   end
 end
 
--- Initialize default servers first
-for _, lsp in ipairs(default_servers) do
-  require('lspconfig')[lsp].setup(make_base_config())
-end
-
--- Override with server-specific overrides
-for _, server_override_path in ipairs(server_overrides) do
-  setup_lsp_server_override(server_override_path)
-end
-
--- Override with local server-specific overrides
+-- Override with local server-specific overrides first
 for _, server_override_path in ipairs(local_server_overrides) do
-  setup_lsp_server_override(server_override_path)
+  local lsp, config = get_server_override_config(server_override_path)
+  if config ~= nil then
+    server_configs[lsp] = config
+  end
+end
+
+-- Finally, actually setup the servers
+for lsp, config in pairs(server_configs) do
+  require('lspconfig')[lsp].setup(config)
 end
 
 require('fzf_lsp').setup()
