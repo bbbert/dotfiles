@@ -76,6 +76,52 @@ function pacman_install() {
   sudo pacman -S --noconfirm $@
 }
 
+### Version comparison utility function
+
+function compare_versions() {
+  local LHS=$1
+  local RHS=$2
+  local MIN_LHS_RHS=$(printf '%s\n' $LHS $RHS | sort -V | head -n1)
+  echo $LHS $RHS $MIN_LHS_RHS
+  if [ "$LHS" == "$RHS" ]; then
+    echo "="
+  elif [ "$LHS" == "$MIN_LHS_RHS" ]; then
+    echo "<"
+  else
+    echo ">"
+  fi
+}
+
+function versions_eq() {
+  local RESULT=$(compare_versions $1 $2)
+  if [ "$RESULT" == "=" ]; then return 1; fi
+  return 0
+}
+
+function versions_lt() {
+  local RESULT=$(compare_versions $1 $2)
+  if [ "$RESULT" == "<" ]; then return 1; fi
+  return 0
+}
+
+function versions_gt() {
+  local RESULT=$(compare_versions $1 $2)
+  if [ "$RESULT" == ">" ]; then return 1; fi
+  return 0
+}
+
+function versions_le() {
+  local RESULT=$(compare_versions $1 $2)
+  if [ "$RESULT" == "<" ] || [ "$RESULT" == "=" ]; then return 1; fi
+  return 0
+}
+
+function versions_ge() {
+  local RESULT=$(compare_versions $1 $2)
+  if [ "$RESULT" == ">" ] || [ "$RESULT" == "=" ]; then return 1; fi
+  return 0
+}
+
 ### Cross-platform install scripts
 
 function install_gitstatus() {
@@ -187,6 +233,8 @@ function install_rg() {
   {{ end }}
 }
 
+readonly MIN_TMUX_VERSION=3.2
+
 function build_tmux_from_source() {
   local TMUX_VERSION=3.2
   local TMUX_URL="https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz"
@@ -220,15 +268,14 @@ function install_latest_tmux() {
 
     # then install from source if not enough
     TMUX_VERSION="$(get_tmux_version)"
-    if [ -z "$TMUX_VERSION" ] ||
-      awk "BEGIN { exit !($TMUX_VERSION < 2.6) }" &> /dev/null; then
+    if versions_lt "$TMUX_VERSION" "$MIN_TMUX_VERSION"; then
       build_tmux_from_source
     fi
   {{ else if (and (eq .chezmoi.os "linux")
                   (eq .chezmoi.osRelease.id "arch")) }}
     pacman_install tmux
   {{ else }}
-    cannot "install tmux >= 2.6"
+    cannot "install tmux >= $MIN_TMUX_VERSION"
   {{ end }}
 }
 
@@ -245,8 +292,7 @@ function install_vim_plugins() {
 function upgrade_tmux_if_old() {
   TMUX_VERSION="$(get_tmux_version)"
   echo tmux: $TMUX_VERSION
-  if [ ! -z "$TMUX_VERSION" ] &&
-    awk "BEGIN { exit !($TMUX_VERSION >= 2.6) }" &> /dev/null; then
+  if versions_ge "$TMUX_VERSION" "$MIN_TMUX_VERSION"; then
     return
   fi
 
