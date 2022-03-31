@@ -82,7 +82,6 @@ function compare_versions() {
   local LHS=$1
   local RHS=$2
   local MIN_LHS_RHS=$(printf '%s\n' $LHS $RHS | sort -V | head -n1)
-  echo $LHS $RHS $MIN_LHS_RHS
   if [ "$LHS" == "$RHS" ]; then
     echo "="
   elif [ "$LHS" == "$MIN_LHS_RHS" ]; then
@@ -94,32 +93,32 @@ function compare_versions() {
 
 function versions_eq() {
   local RESULT=$(compare_versions $1 $2)
-  if [ "$RESULT" == "=" ]; then return 1; fi
-  return 0
+  if [ "$RESULT" == "=" ]; then return 0; fi
+  return 1
 }
 
 function versions_lt() {
   local RESULT=$(compare_versions $1 $2)
-  if [ "$RESULT" == "<" ]; then return 1; fi
-  return 0
+  if [ "$RESULT" == "<" ]; then return 0; fi
+  return 1
 }
 
 function versions_gt() {
   local RESULT=$(compare_versions $1 $2)
-  if [ "$RESULT" == ">" ]; then return 1; fi
-  return 0
+  if [ "$RESULT" == ">" ]; then return 0; fi
+  return 1
 }
 
 function versions_le() {
   local RESULT=$(compare_versions $1 $2)
-  if [ "$RESULT" == "<" ] || [ "$RESULT" == "=" ]; then return 1; fi
-  return 0
+  if [ "$RESULT" == "<" ] || [ "$RESULT" == "=" ]; then return 0; fi
+  return 1
 }
 
 function versions_ge() {
   local RESULT=$(compare_versions $1 $2)
-  if [ "$RESULT" == ">" ] || [ "$RESULT" == "=" ]; then return 1; fi
-  return 0
+  if [ "$RESULT" == ">" ] || [ "$RESULT" == "=" ]; then return 0; fi
+  return 1
 }
 
 ### Cross-platform install scripts
