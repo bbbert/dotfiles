@@ -69,5 +69,5 @@
   # pre-install vim and neovim plugins
   install_vim_plugins = {{ pluck "install_vim_plugins" . $defaults | first }}
 
-  # ensure at least tmux version 2.6
+  # ensure at least tmux version 3.2
   upgrade_tmux_if_old = {{ pluck "upgrade_tmux_if_old" . $defaults | first }}
