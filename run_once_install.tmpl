@@ -125,6 +125,18 @@ function install_fzf() {
   {{ end }}
 }
 
+function install_x_tools() {
+  {{ if (and (eq .chezmoi.os "linux")
+             (eq .chezmoi.osRelease.id "ubuntu")) }}
+    apt_install xdotool xsel xclip
+  {{ else if (and (eq .chezmoi.os "linux")
+                  (eq .chezmoi.osRelease.id "arch")) }}
+    pacman_install xdotool xsel xclip
+  {{ else }}
+    cannot "install misc tools"
+  {{ end }}
+}
+
 function install_misc_tools() {
   {{ if (and (eq .chezmoi.os "linux")
              (eq .chezmoi.osRelease.id "ubuntu")) }}
@@ -250,6 +262,7 @@ echo "OS: $HUMAN_READABLE_SYSTEM_CONFIGURATION"
 {{ if .install_grc }} install_grc {{ end }}
 {{ if .install_fzf }} install_fzf {{ end }}
 {{ if .install_rg }} install_rg {{ end }}
+{{ if .install_x_tools }} install_x_tools {{ end }}
 {{ if .install_misc_tools }} install_misc_tools {{ end }}
 {{ if .install_latest_neovim }} install_latest_neovim {{ end }}
 {{ if .install_vim_plugins }} install_vim_plugins {{ end }}

@@ -55,6 +55,9 @@
   # for fast grep
   install_rg = {{ pluck "install_rg" . $defaults | first }}
 
+  # install X tools (xsel, xclip, xdotool)
+  install_x_tools = {{ pluck "install_x_tools" . $defaults | first }}
+
   # various misc tools
   install_misc_tools = {{ pluck "install_misc_tools" . $defaults | first }}
 
