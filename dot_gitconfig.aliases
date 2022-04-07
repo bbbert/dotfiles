@@ -9,6 +9,8 @@
 
   cm = commit -m
 
+  cempty = commit -m "empty" --allow-empty
+
   co = checkout
   cob = checkout -b
 
