@@ -5,7 +5,16 @@ require('nvim-treesitter.configs').setup {
     additional_vim_regex_highlighting = false,
   },
   indent = {
+    enable = false,
+  },
+  incremental_selection = {
     enable = true,
+    keymaps = {
+      init_selection = "<CR>",
+      node_incremental = ".",
+      scope_incremental = "<CR>",
+      node_decremental = ",",
+    },
   },
   textobjects = {
     select = {
@@ -22,8 +31,9 @@ require('nvim-treesitter.configs').setup {
   textsubjects = {
     enable = true,
     keymaps = {
-      ['.'] = 'textsubjects-smart',
+      ['s'] = 'textsubjects-smart',
       [';'] = 'textsubjects-container-outer',
+      ['i;'] = 'textsubjects-container-inner',
     }
   },
 }
