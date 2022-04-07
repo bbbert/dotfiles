@@ -186,6 +186,9 @@ Plug 'zchee/vim-flatbuffers'
 -- Markdown
 Plug('iamcco/markdown-preview.nvim', { ['do'] = 'cd app & yarn install' })
 
+-- Flatbuffers
+Plug 'vimwiki/vimwiki'
+
 -- }}}
 
 vim.call('plug#end')
@@ -210,7 +213,7 @@ util.source 'plugins/gitsigns.lua'
 util.source 'plugins/gundo.vim'
 util.source 'plugins/highlightedyank.vim'
 util.source 'plugins/lspconfig.lua'
-util.source 'plugins/lspkind.lua'
+-- util.source 'plugins/lspkind.lua'
 util.source 'plugins/minimap.vim'
 util.source 'plugins/nerdtree.lua'
 util.source 'plugins/nvim_lightbulb.lua'
