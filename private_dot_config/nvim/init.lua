@@ -54,12 +54,6 @@ Plug 'junegunn/fzf.vim'
 -- Seamless split navigation with tmux
 Plug 'christoomey/vim-tmux-navigator'
 
--- Zoom into a split
-Plug 'dhruvasagar/vim-zoom'
-
--- Instant collaboration
-Plug 'jbyuki/instant.nvim'
-
 -- Minimap
 Plug 'wfxr/minimap.vim'
 
@@ -72,19 +66,19 @@ Plug 'wfxr/minimap.vim'
 Plug 'neovim/nvim-lspconfig'
 
 -- Special LSP config for neovim Lua development
-Plug 'folke/lua-dev.nvim'
+-- Plug 'folke/lua-dev.nvim'
 
 -- Icons for LSP completion
-Plug 'onsails/lspkind-nvim'
+-- Plug 'onsails/lspkind-nvim'
 
 -- Diagnostics
-Plug 'folke/trouble.nvim'
+-- Plug 'folke/trouble.nvim'
 
 -- FZF integration
-Plug 'gfanto/fzf-lsp.nvim'
+-- Plug 'gfanto/fzf-lsp.nvim'
 
 -- Lightbulb beside code actions
-Plug 'kosayoda/nvim-lightbulb'
+-- Plug 'kosayoda/nvim-lightbulb'
 
 -- Treesitter
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
@@ -97,11 +91,11 @@ Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
 -- Completion
 Plug 'hrsh7th/nvim-compe'
 
--- Snippets
-Plug 'hrsh7th/vim-vsnip'
+-- -- Snippets
+-- Plug 'hrsh7th/vim-vsnip'
 
--- Symbol outline
-Plug 'liuchengxu/vista.vim'
+-- -- Symbol outline
+-- Plug 'liuchengxu/vista.vim'
 
 -- Documentation generator
 Plug('kkoomen/vim-doge', { ['do'] = ':call doge#install()' })
@@ -186,7 +180,7 @@ Plug 'zchee/vim-flatbuffers'
 -- Markdown
 Plug('iamcco/markdown-preview.nvim', { ['do'] = 'cd app & yarn install' })
 
--- Flatbuffers
+-- Vimwiki
 Plug 'vimwiki/vimwiki'
 
 -- }}}
@@ -212,11 +206,8 @@ util.source 'plugins/fzf.vim'
 util.source 'plugins/gitsigns.lua'
 util.source 'plugins/gundo.vim'
 util.source 'plugins/highlightedyank.vim'
-util.source 'plugins/lspconfig.lua'
--- util.source 'plugins/lspkind.lua'
 util.source 'plugins/minimap.vim'
 util.source 'plugins/nerdtree.lua'
-util.source 'plugins/nvim_lightbulb.lua'
 util.source 'plugins/search_pulse.vim'
 util.source 'plugins/startify.vim'
 util.source 'plugins/subversive.vim'
@@ -224,9 +215,12 @@ util.source 'plugins/tabular.vim'
 util.source 'plugins/tmuxline.lua'
 util.source 'plugins/tmux_navigator.vim'
 util.source 'plugins/treesitter.lua'
-util.source 'plugins/trouble.lua'
-util.source 'plugins/vista.vim'
-util.source 'plugins/vsnip.lua'
+-- util.source 'plugins/lspconfig.lua'
+-- util.source 'plugins/lspkind.lua'
+-- util.source 'plugins/nvim_lightbulb.lua'
+-- util.source 'plugins/trouble.lua'
+-- util.source 'plugins/vista.vim'
+-- util.source 'plugins/vsnip.lua'
 
 -- }}}
 
