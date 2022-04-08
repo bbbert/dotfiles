@@ -14,7 +14,7 @@
   co = checkout
   cob = checkout -b
 
-  nuke = ! git reset --hard HEAD; git clean -f -d
+  nuke = "! git reset --hard HEAD; git clean -f -d"
 
   rp = rev-parse
 
