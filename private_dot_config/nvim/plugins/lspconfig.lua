@@ -39,9 +39,12 @@ end
 
 _G.lsp_switch_source_header = function(splitcmd)
   local params = { uri = vim.uri_from_bufnr(0) }
-  vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', params, function(err, _, result)
+  vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', params, function(err, result)
     if err then return end
-    if not result then print("Corresponding file can’t be determined") return end
+    if not result then
+      print("Corresponding file can’t be determined")
+      return
+    end
     vim.api.nvim_command(splitcmd .. ' ' .. vim.uri_to_fname(result))
   end)
 end
@@ -69,20 +72,17 @@ local on_attach = function(client, bufnr)
   util.buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
   util.buf_set_keymap('n', '<Leader>dd', '<Cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
 
-  if client.resolved_capabilities.document_formatting then
-    util.buf_set_keymap("n", "<F3>", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
-  end
-  if client.resolved_capabilities.document_range_formatting then
-    util.buf_set_keymap("x", "<F3>", "<Cmd>lua vim.lsp.buf.range_formatting()<CR>")
-    util.buf_set_keymap("n", "gm", "<Cmd>lua format_range_operator()<CR>")
-  end
   util.buf_set_keymap('n', '<F4>', '<Cmd>lua lsp_organize_imports()<CR>')
   util.buf_set_keymap('n', 'gs', '<Cmd>lua lsp_switch_source_header("edit")<CR>')
 end
 
+util.global_set_keymap("n", "<F3>", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
+util.global_set_keymap("x", "<F3>", "<Cmd>lua vim.lsp.buf.range_formatting()<CR>")
+util.global_set_keymap("n", "gm", "<Cmd>lua format_range_operator()<CR>")
+
 local make_base_config = function()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
+  require('cmp_nvim_lsp').update_capabilities(capabilities)
 
   return {
     on_attach = on_attach,
@@ -93,61 +93,46 @@ local make_base_config = function()
   }
 end
 
--- List of servers to initialize with the base config, unless they are overriden
--- by a server-specific config in <server_override_dir>/<server>.lua
-local default_servers = {
-  'bashls',
-  'clangd',
-  'pyright',
-  'rust_analyzer',
-  'terraformls',
-  'texlab',
-  'tsserver',
-}
+-- Load server-specific config overrides from a folder
+local function load_server_overrides(dir, pattern)
+  local overrides = {}
 
--- Server-specific config overrides
+  local server_override_paths = vim.fn.globpath(dir, pattern, 0, 1)
+  for _, server_override_path in ipairs(server_override_paths) do
+    local filename = vim.fn['maktaba#path#Basename'](server_override_path)
+    local lsp = vim.fn.split(filename, '\\.')[1]
+
+    local override_module = dofile(server_override_path)
+    if util.is_callable(override_module.modify_base_config) then
+      local config = override_module.modify_base_config(make_base_config())
+      overrides[lsp] = config
+    else
+      print('Failed to load server override ' .. server_override_path)
+    end
+  end
+
+  return overrides
+end
+
 local server_override_dir = vim.fn.stdpath('config') .. '/plugins/lspconfig'
-local server_overrides = vim.fn.globpath(server_override_dir, '*.lua', 0, 1)
-local local_server_overrides = vim.fn.globpath(server_override_dir, '*.local.lua', 0, 1)
+local server_overrides = load_server_overrides(server_override_dir, '*.lua')
+local local_server_overrides = load_server_overrides(server_override_dir, '*.local.lua')
 
-local function get_server_override_config(server_override_path)
-  local filename = vim.fn['maktaba#path#Basename'](server_override_path)
-  local lsp = vim.fn.split(filename, '\\.')[1]
-
-  local server_module = dofile(server_override_path)
-  if util.is_callable(server_module.modify_base_config) then
-    local config = server_module.modify_base_config(make_base_config())
-    return lsp, config
+local function get_config_by_server_name(server_name)
+  if local_server_overrides[server_name] ~= nil then
+    return local_server_overrides[server_name]
+  elseif server_overrides[server_name] ~= nil then
+    return server_overrides[server_name]
   end
-  return lsp, nil
+  return make_base_config()
 end
 
-local server_configs = {}
+local lsp_installer = require('nvim-lsp-installer')
 
--- Start with default configs
-for _, lsp in ipairs(default_servers) do
-  server_configs[lsp] = make_base_config()
-end
-
--- Override with server-specific configs
-for _, server_override_path in ipairs(server_overrides) do
-  local lsp, config = get_server_override_config(server_override_path)
-  if config ~= nil then
-    server_configs[lsp] = config
-  end
-end
-
--- Override with local server-specific overrides first
-for _, server_override_path in ipairs(local_server_overrides) do
-  local lsp, config = get_server_override_config(server_override_path)
-  if config ~= nil then
-    server_configs[lsp] = config
-  end
-end
-
--- Finally, actually setup the servers
-for lsp, config in pairs(server_configs) do
-  require('lspconfig')[lsp].setup(config)
-end
-
-require('fzf_lsp').setup()
+-- Register a handler that will be called for each installed server when it's
+-- ready (i.e. when installation is finished or if the server is already
+-- installed).
+lsp_installer.on_server_ready(function(server)
+  local opts = get_config_by_server_name(server.name)
+  server:setup(opts)
+end)

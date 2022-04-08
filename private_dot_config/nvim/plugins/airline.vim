@@ -25,6 +25,9 @@ nmap <silent> <Leader>9 <Plug>AirlineSelectTab9
 nmap <silent> <Leader>- <Plug>AirlineSelectPrevTab
 nmap <silent> <Leader>= <Plug>AirlineSelectNextTab
 
+" Hide neo-tree
+let g:airline#extensions#tabline#ignore_bufadd_pat = '!|gundo|neo-tree|startify|tagbar|term://'
+
 " Customize airline
 function! AirlineInit()
   " Integration with vim-zoom

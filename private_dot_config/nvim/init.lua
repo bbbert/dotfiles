@@ -26,20 +26,20 @@ Plug 'mhinz/vim-startify'
 Plug 'ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
 
--- Themes for Airline
+-- Themes for airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
--- Sync tmux config with airline config
+-- Sync tmux config with Airline config
 Plug 'edkolev/tmuxline.vim'
 
 -- Gitsigns
 Plug 'nvim-lua/plenary.nvim'
 Plug 'lewis6991/gitsigns.nvim' -- needs nvim-lua/plenary.nvim
 
--- NERDTree
-Plug 'scrooloose/nerdtree'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+-- Neotree
+Plug 'MunifTanjim/nui.nvim'
+Plug 'nvim-neo-tree/neo-tree.nvim'
 
 -- Bufkill
 Plug 'qpkorr/vim-bufkill'
@@ -51,11 +51,12 @@ Plug 'sjl/gundo.vim'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
+-- Telescope (still too slow to replace fzf but can be used for other pickers)
+Plug 'nvim-telescope/telescope.nvim'
+Plug('nvim-telescope/telescope-fzf-native.nvim', { ['do'] = 'make' })
+
 -- Seamless split navigation with tmux
 Plug 'christoomey/vim-tmux-navigator'
-
--- Minimap
-Plug 'wfxr/minimap.vim'
 
 -- }}}
 
@@ -65,40 +66,54 @@ Plug 'wfxr/minimap.vim'
 -- LSP configs
 Plug 'neovim/nvim-lspconfig'
 
--- Special LSP config for neovim Lua development
--- Plug 'folke/lua-dev.nvim'
+-- LSP installer
+Plug 'williamboman/nvim-lsp-installer'
+
+-- Null LS for linters
+Plug 'jose-elias-alvarez/null-ls.nvim'
 
 -- Icons for LSP completion
--- Plug 'onsails/lspkind-nvim'
+Plug 'onsails/lspkind-nvim'
 
 -- Diagnostics
--- Plug 'folke/trouble.nvim'
-
--- FZF integration
--- Plug 'gfanto/fzf-lsp.nvim'
+Plug 'folke/trouble.nvim'
 
 -- Lightbulb beside code actions
--- Plug 'kosayoda/nvim-lightbulb'
+Plug 'kosayoda/nvim-lightbulb'
 
--- Treesitter
-Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
+-- Symbol outliner
+Plug 'simrat39/symbols-outline.nvim'
+
+-- }}}
+
+-- Completion {{{2
+-- ----------
+
+-- Completion engine
+Plug 'hrsh7th/nvim-cmp'
+
+-- Completion sources
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
 
 -- }}}
 
 -- Code tools {{{2
 -- ----------
 
--- Completion
-Plug 'hrsh7th/nvim-compe'
-
--- -- Snippets
--- Plug 'hrsh7th/vim-vsnip'
-
--- -- Symbol outline
--- Plug 'liuchengxu/vista.vim'
+-- Treesitter
+Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
 
 -- Documentation generator
 Plug('kkoomen/vim-doge', { ['do'] = ':call doge#install()' })
+
+-- GitHub Integration
+Plug 'pwntester/octo.nvim'
+
+-- Diff
+Plug 'sindrets/diffview.nvim'
 
 -- }}}
 
@@ -159,6 +174,9 @@ Plug 'triglav/vim-visual-increment'
 -- Vim search pulse
 Plug 'inside/vim-search-pulse'
 
+-- Improved asterisk
+Plug 'haya14busa/vim-asterisk'
+
 -- }}}
 
 -- Languages {{{2
@@ -183,6 +201,9 @@ Plug('iamcco/markdown-preview.nvim', { ['do'] = 'cd app & yarn install' })
 -- Vimwiki
 Plug 'vimwiki/vimwiki'
 
+-- Lua dev in neovim
+Plug 'folke/lua-dev.nvim'
+
 -- }}}
 
 vim.call('plug#end')
@@ -200,27 +221,29 @@ util.source 'editor/keymaps.vim'
 
 util.source 'plugins/airline.vim'
 util.source 'plugins/bufkill.vim'
-util.source 'plugins/compe.lua'
+util.source 'plugins/diffview.lua'
 util.source 'plugins/doge.lua'
 util.source 'plugins/fzf.vim'
 util.source 'plugins/gitsigns.lua'
 util.source 'plugins/gundo.vim'
 util.source 'plugins/highlightedyank.vim'
-util.source 'plugins/minimap.vim'
-util.source 'plugins/nerdtree.lua'
-util.source 'plugins/search_pulse.vim'
+util.source 'plugins/lspconfig.lua'
+util.source 'plugins/neo_tree.lua'
+util.source 'plugins/null_ls.lua'
+util.source 'plugins/nvim_cmp.lua'
+util.source 'plugins/nvim_lightbulb.lua'
+util.source 'plugins/octo.lua'
+util.source 'plugins/search.vim'
 util.source 'plugins/startify.vim'
 util.source 'plugins/subversive.vim'
+util.source 'plugins/symbols_outline.lua'
 util.source 'plugins/tabular.vim'
+util.source 'plugins/telescope.lua'
 util.source 'plugins/tmuxline.lua'
 util.source 'plugins/tmux_navigator.vim'
 util.source 'plugins/treesitter.lua'
--- util.source 'plugins/lspconfig.lua'
--- util.source 'plugins/lspkind.lua'
--- util.source 'plugins/nvim_lightbulb.lua'
--- util.source 'plugins/trouble.lua'
--- util.source 'plugins/vista.vim'
--- util.source 'plugins/vsnip.lua'
+util.source 'plugins/trouble.lua'
+util.source 'plugins/vimtex.vim'
 
 -- }}}
 
