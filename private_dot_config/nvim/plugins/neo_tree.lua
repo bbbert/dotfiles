@@ -61,6 +61,6 @@ require('neo-tree').setup {
 
 local util = require('util')
 util.global_set_keymap('n', '<Leader>nn', '<Cmd>Neotree toggle<CR>')
-util.global_set_keymap('n', '<Leader>nf', '<Cmd>Neotree toggle reveal_force_cwd<CR>')
+util.global_set_keymap('n', '<Leader>nf', '<Cmd>Neotree reveal_force_cwd<CR>')
 util.global_set_keymap('n', '<Leader>ng', '<Cmd>Neotree toggle git_status right<CR>')
 util.global_set_keymap('n', '<Leader>nb', '<Cmd>Neotree toggle buffers<CR>')
