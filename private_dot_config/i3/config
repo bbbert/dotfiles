@@ -150,7 +150,7 @@ mode "System: sh(u)tdown, (r)estart, (l)ock, (s)uspend, (h)ibernate, or logout (
   bindsym l exec --no-startup-id dm-tool lock, mode "default"
   bindsym s exec --no-startup-id systemctl suspend, mode "default"
   bindsym h exec --no-startup-id systemctl hibernate, mode "default"
-  bindsym x exec --no-startup-id i3-msg exit, mode "default"
+  bindsym x exec --no-startup-id xfce4-session-logout --logout, mode "default"
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
