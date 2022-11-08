@@ -82,7 +82,7 @@ util.global_set_keymap("n", "gm", "<Cmd>lua format_range_operator()<CR>")
 
 local make_base_config = function()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  require('cmp_nvim_lsp').update_capabilities(capabilities)
+  require('cmp_nvim_lsp').default_capabilities(capabilities)
 
   return {
     on_attach = on_attach,

@@ -202,7 +202,7 @@ Plug('iamcco/markdown-preview.nvim', { ['do'] = 'cd app & yarn install' })
 Plug 'vimwiki/vimwiki'
 
 -- Lua dev in neovim
-Plug 'folke/lua-dev.nvim'
+Plug 'folke/neodev.nvim'
 
 -- }}}
 
