@@ -60,7 +60,7 @@ set noswapfile                              " Disable swapfiles
 set backup                                  " Keep a backup of file
 set writebackup
 set backupcopy=auto                         " Do what's best to backup files
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/tmp  " Directories to backup to
+set backupdir=/tmp                          " Directories to backup to
 set backupskip=/tmp                         " Don't write a backup if in the tmp directory
 
 " }}}

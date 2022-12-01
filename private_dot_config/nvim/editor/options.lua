@@ -40,9 +40,7 @@ vim.opt.backup = true       -- Keep a backup of file
 vim.opt.writebackup = true
 vim.opt.backupcopy = 'auto' -- Do what's best to backup files
 vim.opt.backupdir = {       -- Directories to backup to
-  '~/.vim-tmp',
-  '~/.tmp',
-  '~/tmp,/tmp',
+  '/tmp',
 }
 vim.opt.backupskip = '/tmp' -- Don't write a backup if in the tmp directory
 
